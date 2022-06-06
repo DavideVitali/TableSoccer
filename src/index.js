@@ -13,7 +13,7 @@ let module = null;
 playerImage.src = "assets/playerDown.png";
 fieldImage.onload = () => {
     F.drawImage(fieldImage, 0, 0);
-    module = Module.m433();
+    module = Module.m433('defense');
 }
 
 animatePlayer = function() {
