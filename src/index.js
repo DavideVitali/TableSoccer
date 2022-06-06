@@ -16,18 +16,18 @@ fieldImage.onload = () => {
     module = Module.m433('defense');
 }
 
-animatePlayer = function() {
-    P.clearRect(0, 0, pCanvas.width, pCanvas.height);
-    for (let i = 0; i < 11; i++) {
-        P.drawImage(
-            playerImage, 
-            (frameNumber % 4) * 32, 0, 
-            32, 32, 
-            (module[i].x * pCanvas.width / 2 / 100) -32, (module[i].y * pCanvas.height / 100) - 32,
-            32, 32);
+// animatePlayer = function() {
+//     P.clearRect(0, 0, pCanvas.width, pCanvas.height);
+//     for (let i = 0; i < 11; i++) {
+//         P.drawImage(
+//             playerImage, 
+//             (frameNumber % 4) * 32, 0, 
+//             32, 32, 
+//             (module[i].x * pCanvas.width / 2 / 100) -32, (module[i].y * pCanvas.height / 100) - 32,
+//             32, 32);
 
-    }
-    frameNumber++;
-}
+//     }
+//     frameNumber++;
+// }
 
-setInterval(animatePlayer, 100);
+// setInterval(animatePlayer, 100);
