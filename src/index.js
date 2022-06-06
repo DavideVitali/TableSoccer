@@ -10,6 +10,7 @@ const playerImage = new Image();
 let frameNumber = 0;
 let module = null;
 
+// Italia (4-3-3): Donnarumma; Di Lorenzo, Bonucci, Chiellini, Emerson; Barella, Jorginho, Verratti; Insigne, Immobile, Chiesa. 
 playerImage.src = "assets/playerDown.png";
 fieldImage.onload = () => {
     F.drawImage(fieldImage, 0, 0);
