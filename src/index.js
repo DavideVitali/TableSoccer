@@ -1,20 +1,32 @@
-const canvas = document.querySelector('canvas');
-const ctx = canvas.getContext('2d');
+let Module = new Formation();
+const fCanvas = document.getElementById('Field');
+const F = fCanvas.getContext('2d');
+const pCanvas = document.getElementById('Players');
+const P = pCanvas.getContext('2d');
+
 const fieldImage = new Image();
 fieldImage.src = "assets/map.png";
 const playerImage = new Image();
 let frameNumber = 0;
+let module = null;
 
 playerImage.src = "assets/playerDown.png";
 fieldImage.onload = () => {
-    ctx.drawImage(fieldImage, 0, 0);
-    ctx.drawImage(playerImage, 0, 0, 32, 32, canvas.width / 2 -32, canvas.height / 2 - 32, 32, 32);
+    F.drawImage(fieldImage, 0, 0);
+    module = Module.m433();
 }
 
 animatePlayer = function() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(fieldImage, 0, 0);
-    ctx.drawImage(playerImage, (frameNumber % 4) * 32, 0, 32, 32, canvas.width / 2 -32, canvas.height / 2 - 32, 32, 32);
+    P.clearRect(0, 0, pCanvas.width, pCanvas.height);
+    for (let i = 0; i < 11; i++) {
+        P.drawImage(
+            playerImage, 
+            (frameNumber % 4) * 32, 0, 
+            32, 32, 
+            (module[i].x * pCanvas.width / 2 / 100) -32, (module[i].y * pCanvas.height / 100) - 32,
+            32, 32);
+
+    }
     frameNumber++;
 }
 
