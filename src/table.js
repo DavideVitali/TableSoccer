@@ -12,14 +12,22 @@ class Table {
         this.frameNumber = 0;
     }
 
-    drawTeam = team => {
-        team.players.forEach((element, index) => {
-            this.drawPlayer(element.player, team.formation.positions[index]);
+    drawTeam = arr => {
+        arr.team.forEach(element => {
+            this.drawPlayer(element.player, element.position);
+        });
+    }
+
+    formationToActualCoordinates(formation) {
+        return formation.map(position => {
+            return { 
+                x: (position.x * this.playersCanvas.width / 100) - 4,
+                y: (position.y *this.playersCanvas.height / 100) - 16
+            } 
         });
     }
 
     drawPlayer = (player, position) => {
-        console.log(`Drawing ${player.name}`);
         const current = {
             image: player.htmlImage,
             position: position
@@ -29,8 +37,8 @@ class Table {
                 current.image,
                 0, 0, 
                 32, 32, 
-                (current.position.x * this.playersCanvas.width / 100) - (current.image.width / 4 / 2),
-                (current.position.y * this.playersCanvas.height / 100) - (current.image.height / 2),
+                position.x,
+                position.y,
                 current.image.width / 4,
                 current.image.height);
     }

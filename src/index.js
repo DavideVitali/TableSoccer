@@ -96,18 +96,21 @@ let redPlayers = [
         }),
     }];
 
-
+let blueFormation = new Formation('443', 'offense');
+let bf =  Board.formationToActualCoordinates(blueFormation.positions);
 const blueTeam = new Team({
-    formation: new Formation('443', 'offense'),
+    formation: bf,
     players: bluePlayers
 });
 
+let redFormation = new Formation('343', 'defense');
+let rf =  Board.formationToActualCoordinates(redFormation.positions);
 const redTeam = new Team({
-    formation: new Formation('343', 'defense'),
+    formation: rf,
     players: redPlayers
 })
 
-let promises = blueTeam.players.map(element => element.player.loadImage).concat(redTeam.players.map(element => element.player.loadImage));
+let promises = blueTeam.team.map(element => element.player.loadImage).concat(redTeam.team.map(element => element.player.loadImage));
 Promise.all(promises)
 .then(done => {
     Board.drawTeam(blueTeam);
@@ -115,7 +118,14 @@ Promise.all(promises)
 });
 
 window.addEventListener('mouseup', (e) => {
-    console.log()
-    console.log(`x:${e.pageX}, y:${e.pageY}`);
+    let coords = { x: e.pageX, y: e.pageY};
+    let bluePlayerIndex = blueTeam.findPlayerByCoordinates(coords);
+    let redPlayerIndex = redTeam.findPlayerByCoordinates(coords);
+    console.log(bluePlayerIndex, redPlayerIndex);
+
+    if (bluePlayerIndex) {
+        alert(blueTeam.team[bluePlayerIndex].player.name);
+    } else if (redPlayerIndex) {
+        alert(redTeam.team[redPlayerIndex].player.name);
+    }
 });
-//Board.animatePlayer(blueTeam.players[8].player, blueTeam.formation.positions[8]);
