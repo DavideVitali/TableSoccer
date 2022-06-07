@@ -1,8 +1,14 @@
+body {
+    margin: 0;
+}
 #TableSoccer {
     position:relative;
-    }
+}
 #TableSoccer > canvas {
     position:absolute;
     left:0;
     top:0;
-    }
+}
+.selected-player {
+    cursor:crosshair;
+}

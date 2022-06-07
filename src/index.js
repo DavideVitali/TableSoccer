@@ -117,15 +117,31 @@ Promise.all(promises)
     Board.drawTeam(redTeam);
 });
 
-window.addEventListener('mouseup', (e) => {
-    let coords = { x: e.pageX, y: e.pageY};
+window.addEventListener('mousemove', (e) => {
+    let coords = { x: e.pageX, y: e.pageY };
     let bluePlayerIndex = blueTeam.findPlayerByCoordinates(coords);
     let redPlayerIndex = redTeam.findPlayerByCoordinates(coords);
-    console.log(bluePlayerIndex, redPlayerIndex);
+    if (bluePlayerIndex || bluePlayerIndex == 0) {
+        document.querySelector('body').className += 'selected-player';
+    } else if (redPlayerIndex || redPlayerIndex == 0) {
+        document.querySelector('body').className += 'selected-player';
+    } else {
+        document.querySelector('body').className = '';
+    }
+});
 
-    if (bluePlayerIndex) {
-        alert(blueTeam.team[bluePlayerIndex].player.name);
-    } else if (redPlayerIndex) {
-        alert(redTeam.team[redPlayerIndex].player.name);
+window.addEventListener('mouseup', (e) => {
+    let coords = { x: e.pageX, y: e.pageY };
+    let bluePlayerIndex = blueTeam.findPlayerByCoordinates(coords);
+    let redPlayerIndex = redTeam.findPlayerByCoordinates(coords);
+
+    if (bluePlayerIndex || bluePlayerIndex == 0) {
+        console.log(blueTeam.team[bluePlayerIndex].player.name);
+        document.querySelector('body').className += 'selected-player';
+    } else if (redPlayerIndex || redPlayerIndex == 0) {
+        console.log(redTeam.team[redPlayerIndex].player.name);
+        document.querySelector('body').className += 'selected-player';
+    } else {
+        document.querySelector('body').className = '';
     }
 });

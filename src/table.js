@@ -21,8 +21,8 @@ class Table {
     formationToActualCoordinates(formation) {
         return formation.map(position => {
             return { 
-                x: (position.x * this.playersCanvas.width / 100) - 4,
-                y: (position.y *this.playersCanvas.height / 100) - 16
+                x: (position.x * this.playersCanvas.width / 100),
+                y: (position.y * this.playersCanvas.height / 100)
             } 
         });
     }
@@ -34,6 +34,7 @@ class Table {
         }
         this.playersContext.clearRect(current.position.x, current.position.y, current.image.width, current.image.height);
         this.playersContext.drawImage(
+            
                 current.image,
                 0, 0, 
                 32, 32, 
