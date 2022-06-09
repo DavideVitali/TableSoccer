@@ -10,6 +10,7 @@ class Table {
             this.fieldContext.drawImage(fieldImage, 0, 0);
         }
         this.frameNumber = 0;
+        this.selectedPlayer = null;
     }
 
     drawTeam = arr => {

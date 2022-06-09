@@ -121,13 +121,23 @@ window.addEventListener('mousemove', (e) => {
     let coords = { x: e.pageX, y: e.pageY };
     let bluePlayerIndex = blueTeam.findPlayerByCoordinates(coords);
     let redPlayerIndex = redTeam.findPlayerByCoordinates(coords);
+    let hoveringPlayer = null;
+    let body = document.querySelector('body');
+
     if (bluePlayerIndex || bluePlayerIndex == 0) {
-        document.querySelector('body').className += 'selected-player';
+        hoveringPlayer = blueTeam.team[bluePlayerIndex].player;
     } else if (redPlayerIndex || redPlayerIndex == 0) {
-        document.querySelector('body').className += 'selected-player';
-    } else {
-        document.querySelector('body').className = '';
+        hoveringPlayer = redTeam.team[redPlayerIndex].player;
     }
+
+    if (hoveringPlayer != null || Board.selectedPlayer != null) {
+        if (!body.classList.contains('selected-player')) {
+            body.classList.add('selected-player');
+        } 
+    } else {
+        body.classList.remove('selected-player');
+    }
+
 });
 
 window.addEventListener('mouseup', (e) => {
@@ -135,13 +145,9 @@ window.addEventListener('mouseup', (e) => {
     let bluePlayerIndex = blueTeam.findPlayerByCoordinates(coords);
     let redPlayerIndex = redTeam.findPlayerByCoordinates(coords);
 
-    if (bluePlayerIndex || bluePlayerIndex == 0) {
-        console.log(blueTeam.team[bluePlayerIndex].player.name);
-        document.querySelector('body').className += 'selected-player';
-    } else if (redPlayerIndex || redPlayerIndex == 0) {
-        console.log(redTeam.team[redPlayerIndex].player.name);
-        document.querySelector('body').className += 'selected-player';
-    } else {
-        document.querySelector('body').className = '';
+    if ((bluePlayerIndex || bluePlayerIndex == 0) && Board.selectedPlayer == null) {
+        Board.selectedPlayer = blueTeam.team[bluePlayerIndex].player;
+    } else if ((redPlayerIndex || redPlayerIndex == 0) && Board.selectedPlayer == null) {
+        Board.selectedPlayer = redTeam.team[redPlayerIndex].player;
     }
 });
