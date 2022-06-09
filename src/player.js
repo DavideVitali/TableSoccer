@@ -11,6 +11,4 @@ class Player {
             img.setAttribute('id', this.name);
         });
     };
-
-    
 }

@@ -1,4 +1,4 @@
-let Board = new Table();
+let Board = new Gameboard();
 let Module = new Formation();
 
 // per ora i giocatori hanno tutti lo stesso sprite
@@ -102,6 +102,10 @@ const blueTeam = new Team({
     formation: bf,
     players: bluePlayers
 });
+blueTeam.team.map((element, index) => {
+    Board.blueTeamAnimationManager[index].player = element.player;
+    Board.blueTeamAnimationManager[index].position = element.position;
+})
 
 let redFormation = new Formation('343', 'defense');
 let rf =  Board.formationToActualCoordinates(redFormation.positions);
@@ -109,45 +113,14 @@ const redTeam = new Team({
     formation: rf,
     players: redPlayers
 })
+redTeam.team.map((element, index) => {
+    Board.redTeamAnimationManager[index].player = element.player;
+    Board.redTeamAnimationManager[index].position = element.position;
+});
 
 let promises = blueTeam.team.map(element => element.player.loadImage).concat(redTeam.team.map(element => element.player.loadImage));
 Promise.all(promises)
 .then(done => {
     Board.drawTeam(blueTeam);
     Board.drawTeam(redTeam);
-});
-
-window.addEventListener('mousemove', (e) => {
-    let coords = { x: e.pageX, y: e.pageY };
-    let bluePlayerIndex = blueTeam.findPlayerByCoordinates(coords);
-    let redPlayerIndex = redTeam.findPlayerByCoordinates(coords);
-    let hoveringPlayer = null;
-    let body = document.querySelector('body');
-
-    if (bluePlayerIndex || bluePlayerIndex == 0) {
-        hoveringPlayer = blueTeam.team[bluePlayerIndex].player;
-    } else if (redPlayerIndex || redPlayerIndex == 0) {
-        hoveringPlayer = redTeam.team[redPlayerIndex].player;
-    }
-
-    if (hoveringPlayer != null || Board.selectedPlayer != null) {
-        if (!body.classList.contains('selected-player')) {
-            body.classList.add('selected-player');
-        } 
-    } else {
-        body.classList.remove('selected-player');
-    }
-
-});
-
-window.addEventListener('mouseup', (e) => {
-    let coords = { x: e.pageX, y: e.pageY };
-    let bluePlayerIndex = blueTeam.findPlayerByCoordinates(coords);
-    let redPlayerIndex = redTeam.findPlayerByCoordinates(coords);
-
-    if ((bluePlayerIndex || bluePlayerIndex == 0) && Board.selectedPlayer == null) {
-        Board.selectedPlayer = blueTeam.team[bluePlayerIndex].player;
-    } else if ((redPlayerIndex || redPlayerIndex == 0) && Board.selectedPlayer == null) {
-        Board.selectedPlayer = redTeam.team[redPlayerIndex].player;
-    }
 });

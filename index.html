@@ -1,13 +1,18 @@
 <link href="src/style.css" rel="stylesheet" type="text/css">
 
 <div id="TableSoccer">
-    <canvas id="Field" width="1488" height="1008"></canvas>
-    <canvas id="Players" width="1488" height="1008"></canvas>
+    <canvas class="board" id="Field" width="1488" height="1008"></canvas>
+    <canvas class="board" id="Players" width="1488" height="1008"></canvas>
+    <canvas class="board" id="MouseEvents" width="1488" height="1008"></canvas>
+    <canvas class="user left" id="LeftUser" width="200" height="1008"></canvas>
+    <canvas class="user right" id="RightUser" width="200" height="1008"></canvas>
 </div>
 
+<script src="src/teamAnimationManager.js"></script>
+<script src="src/events.js"></script>
 <script src="src/utils.js"></script>
 <script src="src/formations.js"></script>
 <script src="src/player.js"></script>
 <script src="src/team.js"></script>
-<script src="src/table.js"></script>
+<script src="src/board.js"></script>
 <script src="src/index.js"></script>

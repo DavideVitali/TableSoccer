@@ -23,6 +23,4 @@ class Team {
         }
         return teamIndex;
     }
-
-
 }

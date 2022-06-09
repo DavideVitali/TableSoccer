@@ -1,13 +1,22 @@
 body {
     margin: 0;
+    background-color: black;
 }
 #TableSoccer {
     position:relative;
 }
 #TableSoccer > canvas {
     position:absolute;
-    left:0;
     top:0;
+}
+canvas.board {
+    left:200;
+}
+canvas.user.left {
+    left:0;
+}
+canvas.user.right {
+    left:1688;
 }
 .selected-player {
     cursor:crosshair;
