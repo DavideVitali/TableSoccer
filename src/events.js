@@ -34,21 +34,10 @@ window.addEventListener('mouseup', (e) => {
         animationManager = Board.redTeamAnimationManager[redPlayerIndex];
     } 
 
-    console.log(animationManager);
-    if (animationManager) {
-        //Board.selectedPlayer = selectedTeamElement;
-        /** 
-         * inizia l'animazione del player selezionato
-         * 
-         */
+    if (animationManager && animationManager.isPlaying === false) {
          animationManager.cancelAnimationRequest = false;
          window.requestAnimationFrame(animationManager.animateSprite);
-    } else if (animationManager.player.name == Board.selectedPlayer.player.name) {
-        Board.selectedPlayer = null;
-        /**
-         * annulla l'animazione del player 
-         Board.cancelAnimationRequest = true;
-         Board.selectedPlayer = null;
-         */
+    } else if (animationManager && animationManager.isPlaying === true) {
+        animationManager.cancelAnimation();
     }
 });
