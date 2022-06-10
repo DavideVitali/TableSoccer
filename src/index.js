@@ -1,4 +1,3 @@
-let Board = new Gameboard();
 let Module = new Formation();
 
 // per ora i giocatori hanno tutti lo stesso sprite
@@ -97,26 +96,12 @@ let redPlayers = [
     }];
 
 let blueFormation = new Formation('443', 'offense');
-let bf =  Board.formationToActualCoordinates(blueFormation.positions);
-const blueTeam = new Team({
-    formation: bf,
-    players: bluePlayers
-});
-blueTeam.team.map((element, index) => {
-    Board.blueTeamAnimationManager[index].player = element.player;
-    Board.blueTeamAnimationManager[index].position = element.position;
-})
+const blueTeam = new Team(blueFormation, bluePlayers);
 
 let redFormation = new Formation('343', 'defense');
-let rf =  Board.formationToActualCoordinates(redFormation.positions);
-const redTeam = new Team({
-    formation: rf,
-    players: redPlayers
-})
-redTeam.team.map((element, index) => {
-    Board.redTeamAnimationManager[index].player = element.player;
-    Board.redTeamAnimationManager[index].position = element.position;
-});
+const redTeam = new Team(redFormation, redPlayers);
+
+let Board = new Gameboard(blueTeam, redTeam);
 
 let promises = blueTeam.team.map(element => element.player.loadImage).concat(redTeam.team.map(element => element.player.loadImage));
 Promise.all(promises)

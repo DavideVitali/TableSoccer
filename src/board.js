@@ -1,5 +1,5 @@
 class Gameboard {
-    constructor() {
+    constructor(blueTeam, redTeam) {
         this.fieldCanvas = document.getElementById('Field');
         this.fieldContext = this.fieldCanvas.getContext('2d');
         this.mouseCanvas = document.getElementById('MouseEvents');
@@ -17,8 +17,18 @@ class Gameboard {
             this.fieldContext.drawImage(fieldImage, 0, 0);
         }
 
-        this.blueTeamAnimationManager = Array(11).fill(new TeamAnimationManager());
-        this.redTeamAnimationManager = Array(11).fill(new TeamAnimationManager());
+        this.blueTeamAnimationManager = []
+        for(let blueIndex = 0; blueIndex < 11; blueIndex++) {
+            // la formazione va trasformata in posizione effettiva
+            blueTeam.team[blueIndex].position = this.formationToActualCoordinates(blueTeam.team[blueIndex].position);
+            this.blueTeamAnimationManager.push(new TeamAnimationManager(blueTeam.team[blueIndex].player, blueTeam.team[blueIndex].position));
+        }
+        
+        this.redTeamAnimationManager = [];
+        for(let redIndex = 0; redIndex < 11; redIndex++) {
+            redTeam.team[redIndex].position = this.formationToActualCoordinates(redTeam.team[redIndex].position);
+            this.redTeamAnimationManager.push(new TeamAnimationManager(redTeam.team[redIndex].player, redTeam.team[redIndex].position));
+        }
     }
 
     drawTeam = arr => {
@@ -27,13 +37,11 @@ class Gameboard {
         });
     }
 
-    formationToActualCoordinates(formation) {
-        return formation.map(position => {
-            return { 
-                x: (position.x * this.playersCanvas.width / 100),
-                y: (position.y * this.playersCanvas.height / 100)
-            } 
-        });
+    formationToActualCoordinates(position) {
+        return { 
+            x: (position.x * this.playersCanvas.width / 100),
+            y: (position.y * this.playersCanvas.height / 100)
+        };
     }
 
     drawPlayer = (player, position, currentStep) => {
