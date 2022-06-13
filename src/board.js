@@ -10,6 +10,7 @@ class Gameboard {
         this.leftUserContext = this.leftUserCanvas.getContext('2d')
         this.rightUserCanvas = document.getElementById('RightUser');
         this.rightUserContext = this.rightUserCanvas.getContext('2d')
+        this.selectedPlayerIndex;
 
         const fieldImage = new Image();
         fieldImage.src = "img/map.png";  
@@ -39,9 +40,9 @@ class Gameboard {
 
     drawPlayerCard = (card, player) => {
         let ctx = this.leftUserContext;
+        ctx.font = "12px fff";
         ctx.drawImage(card.template, card.position.x, card.position.y);
         const nameWidth = ctx.measureText(player.name).width;
-        ctx.font = "12px fff";
         ctx.fillText(player.name, ((card.template.width - nameWidth) / 2) + card.position.x, (202 + card.position.y));
     }
 

@@ -26,21 +26,39 @@ let mouseEventsCanvas = document.getElementById('MouseEvents');
 mouseEventsCanvas.addEventListener('click', (e) => {
     let coords = { x: e.pageX - Board.leftUserCanvas.width, y: e.pageY };
     let bluePlayer = blueTeam.findPlayerByCoordinates(coords);
+    let bluePlayerIndex = blueTeam.findPlayerIndexByCoordinates(coords);
     let redPlayer = redTeam.findPlayerByCoordinates(coords);
+    let redPlayerIndex = redTeam.findPlayerIndexByCoordinates(coords);
     
     /** Codice per animare un giocatore 
      * 
-     let animationManager;
+     */
+    let animationManager;
      
-     if (bluePlayerIndex || bluePlayerIndex == 0) {
-         animationManager = Board.blueTeamAnimationManager[bluePlayerIndex];
-        } else if (redPlayerIndex || redPlayerIndex == 0) {
-            animationManager = Board.redTeamAnimationManager[redPlayerIndex];
-        } 
-    */
+    if (bluePlayerIndex || bluePlayerIndex == 0) {
+        animationManager = Board.blueTeamAnimationManager[bluePlayerIndex];
+        Board.selectedPlayerIndex = bluePlayerIndex;
+    } else if (redPlayerIndex || redPlayerIndex == 0) {
+        animationManager = Board.redTeamAnimationManager[redPlayerIndex];
+        Board.selectedPlayerIndex = redPlayerIndex;
+    } 
 
-    if (bluePlayer) {
-        Board.drawPlayerCard(leftUserCard, bluePlayer);
+    if (bluePlayer || redPlayer) {
+        // if (animationManager.isPlaying()) {
+        //     animationManager.cancelAnimation();
+        // } else {
+        //     animationManager.startAnimation();
+        // }
+        let selected = bluePlayer ? bluePlayer : redPlayer
+        
+        Board.drawPlayerCard(leftUserCard, selected);
+        animationManager.setTargetCoordinates(coords);
+    }
 
-    }    
+    if (!bluePlayer && !redPlayer && Board.selectedPlayerIndex)
+    {
+        animationManager = Board.blueTeamAnimationManager[Board.selectedPlayerIndex];
+        animationManager.startAnimation();
+    }
+        
 });

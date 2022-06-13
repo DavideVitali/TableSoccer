@@ -1,6 +1,8 @@
 class TeamAnimationManager {
     #cancelAnimationRequest;
     #isPlaying;
+    #targetCoordinates;
+    #stepDelta;
 
     constructor (player, position) {
         this.frameNumber = 0;
@@ -12,6 +14,9 @@ class TeamAnimationManager {
         // animation speed settings
         this.fpsInterval = 1000 / 12;
         this.animationStartTimestamp;
+
+        // 1 player step = 16 px;
+        this.playerStepLength = 16;
     }
 
     #animateSprite = (timestamp) => {
@@ -19,6 +24,11 @@ class TeamAnimationManager {
 
         if (!this.animationStartTimestamp) {
             this.animationStartTimestamp = timestamp;
+        }
+
+        let stepX, stepY = 0;
+        if (this.#targetCoordinates) {
+
         }
         
         let elapsedTime = Date.now() - this.animationStartTimestamp;
@@ -28,7 +38,9 @@ class TeamAnimationManager {
                 window.cancelAnimationFrame(requestId);
             }
             this.animationStartTimestamp = Date.now();// - (elapsedTime % this.fpsInterval);
-            Board.drawPlayer(this.player, this.position, this.frameNumber);
+            Board.drawPlayer(this.player, step, this.frameNumber);
+            this.position.x += stepX;
+            this.position.y += stepY;
             this.frameNumber++;
         } 
     }
@@ -36,6 +48,7 @@ class TeamAnimationManager {
     cancelAnimation = () => {
         this.#isPlaying = false;
         this.#cancelAnimationRequest = true;
+        this.#targetCoordinates = null;
     }
 
     startAnimation = () => {
@@ -45,4 +58,10 @@ class TeamAnimationManager {
     }
 
     isPlaying = () => this.#isPlaying;
+
+    setTargetCoordinates = (target) => {
+        this.#targetCoordinates = target;
+        this.#stepDelta.x = Math.abs(this.#targetCoordinates.x - this.position.x) / this.playerStepLength;
+        this.#stepDelta.y = Math.abs(this.#targetCoordinates.y - this.position.y) / this.playerStepLength;
+    } 
 }
