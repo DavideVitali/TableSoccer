@@ -12,7 +12,7 @@ class Gameboard {
         this.rightUserContext = this.rightUserCanvas.getContext('2d')
 
         const fieldImage = new Image();
-        fieldImage.src = "assets/map.png";  
+        fieldImage.src = "img/map.png";  
         fieldImage.onload = () => {
             this.fieldContext.drawImage(fieldImage, 0, 0);
         }
@@ -37,6 +37,14 @@ class Gameboard {
         });
     }
 
+    drawPlayerCard = (card, player) => {
+        let ctx = this.leftUserContext;
+        ctx.drawImage(card.template, card.position.x, card.position.y);
+        const nameWidth = ctx.measureText(player.name).width;
+        ctx.font = "12px fff";
+        ctx.fillText(player.name, ((card.template.width - nameWidth) / 2) + card.position.x, (202 + card.position.y));
+    }
+
     formationToActualCoordinates(position) {
         return { 
             x: (position.x * this.playersCanvas.width / 100),
@@ -58,22 +66,14 @@ class Gameboard {
             current.position.x,
             current.position.y,
             current.image.width / 4,
-            current.image.height
-                // current.image,
-                // 0, 0, 
-                // 32, 32, 
-                // position.x,
-                // position.y,
-                // current.image.width / 4,
-                // current.image.height
-                );
+            current.image.height);
     }
 
-    loadPlayerImage = (player) => {
-        const current = {
-            uri: player.imageUrl,
-        }
+    // loadPlayerImage = (player) => {
+    //     const current = {
+    //         uri: player.imageUrl,
+    //     }
 
-        return loadImage(current.uri).then(img => player.htmlImage = img);
-    }
+    //     return loadImage(current.uri).then(img => player.htmlImage = img);
+    // }
 }

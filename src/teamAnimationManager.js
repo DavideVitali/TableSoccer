@@ -1,9 +1,11 @@
 class TeamAnimationManager {
+    #cancelAnimationRequest;
+    #isPlaying;
+
     constructor (player, position) {
         this.frameNumber = 0;
-        this.animationRequestId;
-        this.cancelAnimationRequest = false;
-        this.isPlaying = false;
+        this.#cancelAnimationRequest = false;
+        this.#isPlaying = false;
         this.player = player;
         this.position = position;
         
@@ -12,32 +14,35 @@ class TeamAnimationManager {
         this.animationStartTimestamp;
     }
 
-    animateSprite = (timestamp) => {
-        let requestId = requestAnimationFrame((timestamp) => this.animateSprite(timestamp));
-        
-        this.isPlaying = true;
+    #animateSprite = (timestamp) => {
+        let requestId = requestAnimationFrame((timestamp) => this.#animateSprite(timestamp));
 
         if (!this.animationStartTimestamp) {
             this.animationStartTimestamp = timestamp;
         }
         
         let elapsedTime = Date.now() - this.animationStartTimestamp;
-        console.log(elapsedTime);
-        
         if (elapsedTime > this.fpsInterval) {
-            if (this.frameNumber % 4 == 0 && this.cancelAnimationRequest == true) {
-                this.cancelAnimationRequest = false;
-                this.isPlaying = false;
+            if (this.frameNumber % 4 == 0 && this.#cancelAnimationRequest == true) {
+                this.cancelAnimation();
                 window.cancelAnimationFrame(requestId);
             }
             this.animationStartTimestamp = Date.now();// - (elapsedTime % this.fpsInterval);
             Board.drawPlayer(this.player, this.position, this.frameNumber);
-            this.frameNumber += 1;
+            this.frameNumber++;
         } 
     }
 
     cancelAnimation = () => {
-        this.isPlaying = false;
-        this.cancelAnimationRequest = true;
+        this.#isPlaying = false;
+        this.#cancelAnimationRequest = true;
     }
+
+    startAnimation = () => {
+        this.#isPlaying = true;
+        this.#cancelAnimationRequest = false;
+        this.#animateSprite();
+    }
+
+    isPlaying = () => this.#isPlaying;
 }

@@ -1,9 +1,10 @@
 class Player {
-    constructor({imageUrl, name}) {
+    constructor({imageUrl, portraitUrl, name, stats}) {
         this.imageUrl = imageUrl;
         this.name = name;
         this.isLoaded = false;
         this.loadImage = loadImage(imageUrl);
+        this.stats = stats;
         
         this.loadImage.then(img => {
             this.htmlImage = img;

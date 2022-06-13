@@ -21,23 +21,26 @@
 
 // });
 
-window.addEventListener('mouseup', (e) => {
+let mouseEventsCanvas = document.getElementById('MouseEvents');
+
+mouseEventsCanvas.addEventListener('click', (e) => {
     let coords = { x: e.pageX - Board.leftUserCanvas.width, y: e.pageY };
-    let bluePlayerIndex = blueTeam.findPlayerByCoordinates(coords);
-    let redPlayerIndex = redTeam.findPlayerByCoordinates(coords);
-    let animationManager;
+    let bluePlayer = blueTeam.findPlayerByCoordinates(coords);
+    let redPlayer = redTeam.findPlayerByCoordinates(coords);
+    
+    /** Codice per animare un giocatore 
+     * 
+     let animationManager;
+     
+     if (bluePlayerIndex || bluePlayerIndex == 0) {
+         animationManager = Board.blueTeamAnimationManager[bluePlayerIndex];
+        } else if (redPlayerIndex || redPlayerIndex == 0) {
+            animationManager = Board.redTeamAnimationManager[redPlayerIndex];
+        } 
+    */
 
+    if (bluePlayer) {
+        Board.drawPlayerCard(leftUserCard, bluePlayer);
 
-    if ((bluePlayerIndex || bluePlayerIndex == 0) /** && Board.selectedPlayer == null */) {
-        animationManager = Board.blueTeamAnimationManager[bluePlayerIndex];
-    } else if ((redPlayerIndex || redPlayerIndex == 0) /** && Board.selectedPlayer == null */) {
-        animationManager = Board.redTeamAnimationManager[redPlayerIndex];
-    } 
-
-    if (animationManager && animationManager.isPlaying === false) {
-         animationManager.cancelAnimationRequest = false;
-         window.requestAnimationFrame(animationManager.animateSprite);
-    } else if (animationManager && animationManager.isPlaying === true) {
-        animationManager.cancelAnimation();
-    }
+    }    
 });

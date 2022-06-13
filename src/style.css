@@ -1,6 +1,12 @@
+@font-face {
+    font-family: fff;
+    src: url(../font/fff-forward.regular.ttf);
+}
+
 body {
+    font-family: fff;
     margin: 0;
-    background-color: black;
+    background-color: white;
 }
 #TableSoccer {
     position:relative;
