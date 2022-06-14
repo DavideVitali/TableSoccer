@@ -13,10 +13,17 @@ class TeamAnimationManager {
         this.player = player;
         this.position = position;
         this.previousPosition = position;
-        // this.#moveRequestCursorPosition = { 
-        //     x: position.x + player.htmlImage.width / 4 / 2,
-        //     y: position.y + player.htmlImage.height + 4
-        // };
+        
+        //// ----------- qui l'immagine non è stata ancora caricata
+        this.player.loadImage.then(img => {
+            this.player.htmlImage = img;
+            this.player.htmlImage.setAttribute('id', this.player.name);
+            this.player.isLoaded = true;
+            this.#moveRequestCursorPosition = { 
+                x: position.x + img.width / 4 / 2,
+                y: position.y + img.height + 4
+            };
+        });
         
         // animation speed settings
         this.fpsInterval = 1000 / 12;
@@ -72,6 +79,7 @@ class TeamAnimationManager {
             this.position.x += this.#targetDelta.x;
             this.position.y += this.#targetDelta.y;
             Board.find
+            Board.drawMoveCursors();
             Board.drawPlayer(this.player, this.position, this.frameNumber);
             this.frameNumber++;
         } 

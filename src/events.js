@@ -44,7 +44,10 @@ mouseEventsCanvas.addEventListener('click', (e) => {
     } 
 
     if (bluePlayer || redPlayer) {
-        Board.drawPlayerCard(leftUserCard, bluePlayer ? bluePlayer : redPlayer);
+        let player = bluePlayer ? bluePlayer : redPlayer;
+        let position = animationManager.position;
+        Board.drawPlayerCard(leftUserCard, player);
+        Board.drawMaximumMovement(player, position);
     }
     
     if (!bluePlayer && !redPlayer && (Board.selectedPlayerIndex || Board.selectedPlayerIndex == 0))

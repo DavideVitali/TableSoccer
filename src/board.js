@@ -72,27 +72,43 @@ class Gameboard {
             current.position.x,
             current.position.y,
             current.image.width / 4,
-            current.image.height);
+            current.image.height);            
+        }
         
-        // disegna il triangolino che segnala la disponibilità a fare un movimento
-        if (player.hasMoveRequest()) {
-            let ctx = this.mouseContext;
-        }
-        if (!player.hasMoveRequest()) {
-            let startpoint = { 
-                x: current.position.x + current.image.width / 4 / 2,
-                y: current.position.y + current.image.height + 4
-            };
+    // disegna il triangolino che segnala la disponibilità a fare un movimento
+    drawMoveCursors = () => {
+        let ctx = this.mouseContext;
+        ctx.clearRect(0, 0, this.mouseCanvas.width, this.mouseCanvas.height); 
+        this.blueTeamAnimationManager.map(e => {
+            if (!e.player.hasMoveRequest()) {
+                let startpoint = { 
+                    x: e.position.x + e.player.htmlImage.width / 4 / 2,
+                    y: e.position.y + e.player.htmlImage.height + 4
+                };
+    
+                let ctx = this.mouseContext;
+                ctx.fillStyle = '#ffff00';
+                ctx.beginPath();
+                ctx.moveTo(startpoint.x, startpoint.y);
+                ctx.lineTo(startpoint.x - 6, startpoint.y + 12);
+                ctx.lineTo(startpoint.x + 6, startpoint.y + 12);
+                ctx.closePath();
+                ctx.fill();
+            }    
+        });
+    }
 
-            let ctx = this.mouseContext;
-            ctx.fillStyle = '#ffff00';
-            ctx.beginPath();
-            ctx.moveTo(startpoint.x, startpoint.y);
-            ctx.lineTo(startpoint.x - 6, startpoint.y + 12);
-            ctx.lineTo(startpoint.x + 6, startpoint.y + 12);
-            ctx.closePath();
-            ctx.fill();
-        }
+    drawMaximumMovement = (player, position) => {
+        let dist = 100; // mock, poi dalle stats
+        let center = { 
+            x: position.x + player.htmlImage.width / 4 / 2,
+            y: position.y + player.htmlImage.height + 4
+        };
+        let ctx = this.mouseContext;
+        ctx.beginPath();
+        ctx.arc(center.x, center.y, dist, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+        ctx.fill();
     }
 
     /**

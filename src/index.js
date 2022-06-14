@@ -113,4 +113,5 @@ Promise.all(promises)
 .then(done => {
     Board.drawTeam(blueTeam);
     Board.drawTeam(redTeam);
+    Board.drawMoveCursors();
 });
