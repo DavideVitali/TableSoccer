@@ -44,21 +44,20 @@ mouseEventsCanvas.addEventListener('click', (e) => {
     } 
 
     if (bluePlayer || redPlayer) {
-        // if (animationManager.isPlaying()) {
-        //     animationManager.cancelAnimation();
-        // } else {
-        //     animationManager.startAnimation();
-        // }
-        let selected = bluePlayer ? bluePlayer : redPlayer
-        
-        Board.drawPlayerCard(leftUserCard, selected);
-        animationManager.setTargetCoordinates(coords);
+        Board.drawPlayerCard(leftUserCard, bluePlayer ? bluePlayer : redPlayer);
     }
-
-    if (!bluePlayer && !redPlayer && Board.selectedPlayerIndex)
+    
+    if (!bluePlayer && !redPlayer && (Board.selectedPlayerIndex || Board.selectedPlayerIndex == 0))
     {
         animationManager = Board.blueTeamAnimationManager[Board.selectedPlayerIndex];
-        animationManager.startAnimation();
+        if (animationManager.isPlaying() === false) {
+            try {
+                animationManager.setTargetCoordinates(coords);
+            } catch (error) {
+                alert(error);
+                return;
+            }
+            animationManager.startAnimation();
+        }
     }
-        
 });

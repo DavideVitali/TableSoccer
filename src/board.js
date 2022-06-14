@@ -30,6 +30,9 @@ class Gameboard {
             redTeam.team[redIndex].position = this.formationToActualCoordinates(redTeam.team[redIndex].position);
             this.redTeamAnimationManager.push(new TeamAnimationManager(redTeam.team[redIndex].player, redTeam.team[redIndex].position));
         }
+
+        document.addEventListener('playermoved', (e) => this.checkPlayerCollisions(e.detail.player, e.detail.position));
+        document.addEventListener('playercollision', (e) => this.drawPlayer(e.detail.player, e.detail.position, 0));
     }
 
     drawTeam = arr => {
@@ -53,13 +56,15 @@ class Gameboard {
         };
     }
 
+    clearPlayerRect = ({player, position, dimension}) => {
+        this.playersContext.clearRect(position.x, position.y, dimension.width, dimension.height);
+    }
+
     drawPlayer = (player, position, currentStep) => {
         const current = {
             image: player.htmlImage,
             position: position
         }
-
-        this.playersContext.clearRect(current.position.x, current.position.y, current.image.width / 4, current.image.height);
         this.playersContext.drawImage(
             current.image,
             (current.image.width / 4 ) * (currentStep % 4 ), 0, 
@@ -68,13 +73,57 @@ class Gameboard {
             current.position.y,
             current.image.width / 4,
             current.image.height);
+        
+        // disegna il triangolino che segnala la disponibilità a fare un movimento
+        if (player.hasMoveRequest()) {
+            let ctx = this.mouseContext;
+        }
+        if (!player.hasMoveRequest()) {
+            let startpoint = { 
+                x: current.position.x + current.image.width / 4 / 2,
+                y: current.position.y + current.image.height + 4
+            };
+
+            let ctx = this.mouseContext;
+            ctx.fillStyle = '#ffff00';
+            ctx.beginPath();
+            ctx.moveTo(startpoint.x, startpoint.y);
+            ctx.lineTo(startpoint.x - 6, startpoint.y + 12);
+            ctx.lineTo(startpoint.x + 6, startpoint.y + 12);
+            ctx.closePath();
+            ctx.fill();
+        }
     }
 
-    // loadPlayerImage = (player) => {
-    //     const current = {
-    //         uri: player.imageUrl,
-    //     }
+    /**
+     * Find and dispatch whether a player's sprite is moving through another player's sprite
+     */
+    checkPlayerCollisions = (currentPlayer, currentPosition) => {
+        this.blueTeamAnimationManager.map(e => {
+            if (e.player.htmlImage.id !== currentPlayer.htmlImage.id) {                
+                let width = e.player.htmlImage.width / 4;
+                let height = e.player.htmlImage.height;
 
-    //     return loadImage(current.uri).then(img => player.htmlImage = img);
-    // }
+                // sprites boundaries
+                let cL = currentPosition.x;
+                let cR = cL + width;
+                let cT = currentPosition.y;
+                let cB = cT + height;
+                let eL = e.position.x;
+                let eR = eL + width;
+                let eT = e.position.y;
+                let eB = eT + height;
+
+                if (cL < eR && cR > eL && cT < eB && cB > eT) {
+                    let playerCollision = new CustomEvent('playercollision', {
+                         detail: {
+                            player: e.player,
+                            position: e.position
+                        }
+                    });
+                    document.dispatchEvent(playerCollision);
+                }
+            }
+        });
+    }
 }

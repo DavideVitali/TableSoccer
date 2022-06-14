@@ -22,9 +22,11 @@ class Team {
     findPlayerByCoordinates = (coordinates) => {
         let player;
         for (let i = 0; i < this.team.length; i++) {
-            let position = this.team[i].position;
-            if (position.x < coordinates.x && (position.x + 32) > coordinates.x
-            && position.y < coordinates.y && (position.y + 32) > coordinates.y) {
+            let width = this.team[i].player.htmlImage.width / 4;
+            let height = this.team[i].player.htmlImage.height;
+                        let position = this.team[i].position;
+            if (position.x < coordinates.x && (position.x + width) > coordinates.x
+            && position.y < coordinates.y && (position.y + height) > coordinates.y) {
                 player = this.team[i].player;
                 break;
             }

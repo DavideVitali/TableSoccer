@@ -2,7 +2,9 @@ class TeamAnimationManager {
     #cancelAnimationRequest;
     #isPlaying;
     #targetCoordinates;
-    #stepDelta;
+    #targetDelta = { x: 0, y: 0 };
+    #moveRequestCursorPosition;
+    #playerMovedEvent;
 
     constructor (player, position) {
         this.frameNumber = 0;
@@ -10,6 +12,11 @@ class TeamAnimationManager {
         this.#isPlaying = false;
         this.player = player;
         this.position = position;
+        this.previousPosition = position;
+        // this.#moveRequestCursorPosition = { 
+        //     x: position.x + player.htmlImage.width / 4 / 2,
+        //     y: position.y + player.htmlImage.height + 4
+        // };
         
         // animation speed settings
         this.fpsInterval = 1000 / 12;
@@ -25,22 +32,47 @@ class TeamAnimationManager {
         if (!this.animationStartTimestamp) {
             this.animationStartTimestamp = timestamp;
         }
-
-        let stepX, stepY = 0;
-        if (this.#targetCoordinates) {
-
-        }
         
+        if (this.#targetCoordinates) {
+            let proximityX = Math.floor(Math.abs(this.#targetCoordinates.x - this.position.x));
+            let proximityY = Math.floor(Math.abs(this.#targetCoordinates.y - this.position.y));
+            if ( proximityX == 0 && proximityY == 0 ) {
+                this.cancelAnimation();
+            }
+        }
+
         let elapsedTime = Date.now() - this.animationStartTimestamp;
         if (elapsedTime > this.fpsInterval) {
-            if (this.frameNumber % 4 == 0 && this.#cancelAnimationRequest == true) {
-                this.cancelAnimation();
+            if (this.frameNumber % 2 == 0 && this.#cancelAnimationRequest == true) {
                 window.cancelAnimationFrame(requestId);
             }
+
             this.animationStartTimestamp = Date.now();// - (elapsedTime % this.fpsInterval);
-            Board.drawPlayer(this.player, step, this.frameNumber);
-            this.position.x += stepX;
-            this.position.y += stepY;
+            this.#playerMovedEvent = new CustomEvent('playermoved', { 
+                detail: { 
+                    player: this.player,
+                    position: {
+                        x: this.position.x,
+                        y: this.position.y 
+                    }
+                }
+            });
+            document.dispatchEvent(this.#playerMovedEvent);
+            Board.clearPlayerRect({
+                player: this.player,
+                position: {
+                    x: this.position.x, 
+                    y: this.position.y 
+                }, 
+                dimension: { 
+                    width: this.player.htmlImage.width / 4, 
+                    height: this.player.htmlImage.height 
+                }
+            });
+            this.position.x += this.#targetDelta.x;
+            this.position.y += this.#targetDelta.y;
+            Board.find
+            Board.drawPlayer(this.player, this.position, this.frameNumber);
             this.frameNumber++;
         } 
     }
@@ -49,6 +81,7 @@ class TeamAnimationManager {
         this.#isPlaying = false;
         this.#cancelAnimationRequest = true;
         this.#targetCoordinates = null;
+        this.#targetDelta = { x: 0, y: 0 };
     }
 
     startAnimation = () => {
@@ -60,8 +93,13 @@ class TeamAnimationManager {
     isPlaying = () => this.#isPlaying;
 
     setTargetCoordinates = (target) => {
+        try {
+            this.player.setMoveRequest();
+        } catch (error) {
+            throw error;
+        }
         this.#targetCoordinates = target;
-        this.#stepDelta.x = Math.abs(this.#targetCoordinates.x - this.position.x) / this.playerStepLength;
-        this.#stepDelta.y = Math.abs(this.#targetCoordinates.y - this.position.y) / this.playerStepLength;
+        this.#targetDelta.x = (this.#targetCoordinates.x - this.position.x) / this.playerStepLength;
+        this.#targetDelta.y = (this.#targetCoordinates.y - this.position.y) / this.playerStepLength;
     } 
 }

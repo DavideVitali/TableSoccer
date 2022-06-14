@@ -9,19 +9,22 @@ body {
     background-color: white;
 }
 #TableSoccer {
-    position:relative;
+    position: relative;
 }
 #TableSoccer > canvas {
-    position:absolute;
+    position: absolute;
     top:0;
 }
 canvas.board {
     left:200;
 }
 canvas.user.left {
-    left:0;
+    position: fixed;
+    left: 0px;
+    left: 0px;
 }
 canvas.user.right {
+    position: sticky;
     left:1688;
 }
 .selected-player {
