@@ -11,7 +11,7 @@
 //         hoveringPlayer = redTeam.team[redPlayerIndex].player;
 //     }
 
-//     if (hoveringPlayer != null || Board.selectedPlayer != null) {
+//     if (hoveringPlayer != null || board.selectedPlayer != null) {
 //         if (!body.classList.contains('selected-player')) {
 //             body.classList.add('selected-player');
 //         } 
@@ -24,35 +24,40 @@
 let mouseEventsCanvas = document.getElementById('MouseEvents');
 
 mouseEventsCanvas.addEventListener('click', (e) => {
-    let coords = { x: e.pageX - Board.leftUserCanvas.width, y: e.pageY };
-    let bluePlayer = blueTeam.findPlayerByCoordinates(coords);
-    let bluePlayerIndex = blueTeam.findPlayerIndexByCoordinates(coords);
-    let redPlayer = redTeam.findPlayerByCoordinates(coords);
-    let redPlayerIndex = redTeam.findPlayerIndexByCoordinates(coords);
-    
-    /** Codice per animare un giocatore 
-     * 
-     */
+    let previousPlayer = game.selectedPlayer;
+    let coords = { x: e.pageX - board.leftUserCanvas.width, y: e.pageY };
+    let player = team.findPlayerByCoordinates(coords);
     let animationManager;
      
-    if (bluePlayerIndex || bluePlayerIndex == 0) {
-        animationManager = Board.blueTeamAnimationManager[bluePlayerIndex];
-        Board.selectedPlayerIndex = bluePlayerIndex;
-    } else if (redPlayerIndex || redPlayerIndex == 0) {
-        animationManager = Board.redTeamAnimationManager[redPlayerIndex];
-        Board.selectedPlayerIndex = redPlayerIndex;
-    } 
+    // if (bluePlayerIndex || bluePlayerIndex == 0) {
+    //     animationManager = board.blueTeamAnimationManager[bluePlayerIndex];
+    //     board.selectedPlayerIndex = bluePlayerIndex;
+    // } else if (redPlayerIndex || redPlayerIndex == 0) {
+    //     animationManager = board.redTeamAnimationManager[redPlayerIndex];
+    //     board.selectedPlayerIndex = redPlayerIndex;
+    // } 
 
-    if (bluePlayer || redPlayer) {
-        let player = bluePlayer ? bluePlayer : redPlayer;
+    if (player) {
+        game.selectedPlayer = player;
+        board.drawPlayerCard(leftUserCard, player);
+    }
+
+    if (player && previousPlayer && player.name === previousPlayer.name) {
+        console.log('stesso giocatore');
+        // cancella il cerchio di massimo movimento    
+    }
+
+    if (player && !game.selectedPlayer) {
+        animationManager = board.animationManager.find(e => e.player.name == player.name);
         let position = animationManager.position;
-        Board.drawPlayerCard(leftUserCard, player);
-        Board.drawMaximumMovement(player, position);
+        if (!player.moveDone && !player.moving && !player.moveRequest) {
+            board.drawMaximumMovement(player, position);
+        }
     }
     
-    if (!bluePlayer && !redPlayer && (Board.selectedPlayerIndex || Board.selectedPlayerIndex == 0))
+    if (!player && game.selectedPlayer)
     {
-        animationManager = Board.blueTeamAnimationManager[Board.selectedPlayerIndex];
+        animationManager = board.animationManager.find(e => e.player.name == game.selectedPlayer.name);
         if (animationManager.isPlaying() === false) {
             try {
                 animationManager.setTargetCoordinates(coords);
@@ -61,6 +66,7 @@ mouseEventsCanvas.addEventListener('click', (e) => {
                 return;
             }
             animationManager.startAnimation();
+            game.clearSelectedPlayer();
         }
     }
 });

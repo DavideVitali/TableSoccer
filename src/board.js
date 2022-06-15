@@ -1,5 +1,5 @@
-class Gameboard {
-    constructor(blueTeam, redTeam) {
+class Board {
+    constructor(team) {
         this.fieldCanvas = document.getElementById('Field');
         this.fieldContext = this.fieldCanvas.getContext('2d');
         this.mouseCanvas = document.getElementById('MouseEvents');
@@ -10,7 +10,6 @@ class Gameboard {
         this.leftUserContext = this.leftUserCanvas.getContext('2d')
         this.rightUserCanvas = document.getElementById('RightUser');
         this.rightUserContext = this.rightUserCanvas.getContext('2d')
-        this.selectedPlayerIndex;
 
         const fieldImage = new Image();
         fieldImage.src = "img/map.png";  
@@ -18,26 +17,23 @@ class Gameboard {
             this.fieldContext.drawImage(fieldImage, 0, 0);
         }
 
-        this.blueTeamAnimationManager = []
-        for(let blueIndex = 0; blueIndex < 11; blueIndex++) {
+        this.animationManager = []
+        for(let i = 0; i < 11; i++) {
             // la formazione va trasformata in posizione effettiva
-            blueTeam.team[blueIndex].position = this.formationToActualCoordinates(blueTeam.team[blueIndex].position);
-            this.blueTeamAnimationManager.push(new TeamAnimationManager(blueTeam.team[blueIndex].player, blueTeam.team[blueIndex].position));
+            team.elements[i].position = this.formationToActualCoordinates(team.elements[i].position);
+            this.animationManager.push(new TeamAnimationManager(team.elements[i].player, team.elements[i].position));
         }
         
-        this.redTeamAnimationManager = [];
-        for(let redIndex = 0; redIndex < 11; redIndex++) {
-            redTeam.team[redIndex].position = this.formationToActualCoordinates(redTeam.team[redIndex].position);
-            this.redTeamAnimationManager.push(new TeamAnimationManager(redTeam.team[redIndex].player, redTeam.team[redIndex].position));
-        }
-
-        document.addEventListener('playermoved', (e) => this.checkPlayerCollisions(e.detail.player, e.detail.position));
+        document.addEventListener('playermoved', (e) => {
+            console.log(e.target);
+            this.checkPlayerCollisions(e.detail.player, e.detail.position)
+        });
         document.addEventListener('playercollision', (e) => this.drawPlayer(e.detail.player, e.detail.position, 0));
     }
 
     drawTeam = arr => {
-        arr.team.forEach(element => {
-            this.drawPlayer(element.player, element.position, 0);
+        arr.elements.forEach(e => {
+            this.drawPlayer(e.player, e.position, 0);
         });
     }
 
@@ -79,8 +75,8 @@ class Gameboard {
     drawMoveCursors = () => {
         let ctx = this.mouseContext;
         ctx.clearRect(0, 0, this.mouseCanvas.width, this.mouseCanvas.height); 
-        this.blueTeamAnimationManager.map(e => {
-            if (!e.player.hasMoveRequest()) {
+        this.animationManager.map(e => {
+            if (!e.player.moveRequest && !e.player.moving && !e.player.moveDone) {
                 let startpoint = { 
                     x: e.position.x + e.player.htmlImage.width / 4 / 2,
                     y: e.position.y + e.player.htmlImage.height + 4
@@ -98,8 +94,9 @@ class Gameboard {
         });
     }
 
+    // disegna il cerchio di massimo movimento di un giocatore
     drawMaximumMovement = (player, position) => {
-        let dist = 100; // mock, poi dalle stats
+        let dist = 200; // mock, poi dalle stats
         let center = { 
             x: position.x + player.htmlImage.width / 4 / 2,
             y: position.y + player.htmlImage.height + 4
@@ -115,7 +112,7 @@ class Gameboard {
      * Find and dispatch whether a player's sprite is moving through another player's sprite
      */
     checkPlayerCollisions = (currentPlayer, currentPosition) => {
-        this.blueTeamAnimationManager.map(e => {
+        this.animationManager.map(e => {
             if (e.player.htmlImage.id !== currentPlayer.htmlImage.id) {                
                 let width = e.player.htmlImage.width / 4;
                 let height = e.player.htmlImage.height;

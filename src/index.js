@@ -1,7 +1,7 @@
 let Module = new Formation();
 
 // per ora i giocatori hanno tutti lo stesso sprite
-let bluePlayers = [
+let players = [
     { player: new Player({
         imageUrl: "img/ita_playerDown.png",
         name: 'Donnarumma'
@@ -48,70 +48,19 @@ let bluePlayers = [
         }),
     }];
 
-let redPlayers = [
-    { player: new Player({
-        imageUrl: "img/uk_playerDown.png",
-        name: 'Pickford'
-        }),
-    },{ player: new Player({
-        imageUrl: "img/uk_playerDown.png",
-        name: 'Walker'
-        }),
-    },{ player: new Player({
-        imageUrl: "img/uk_playerDown.png",
-        name: 'Stones'
-        }),
-    },{ player: new Player({
-        imageUrl: "img/uk_playerDown.png",
-        name: 'Maguire'
-        }),
-    },{ player: new Player({
-        imageUrl: "img/uk_playerDown.png",
-        name: 'Trippier'
-        }),
-    },{ player: new Player({
-        imageUrl: "img/uk_playerDown.png",
-        name: 'Shaw'
-        }),
-    },{ player: new Player({
-        imageUrl: "img/uk_playerDown.png",
-        name: 'Phillips'
-        }),
-    },{ player: new Player({
-        imageUrl: "img/uk_playerDown.png",
-        name: 'Rice'
-        }),
-    },{ player: new Player({
-        imageUrl: "img/uk_playerDown.png",
-        name: 'Mount'
-        }),
-    },{ player: new Player({
-        imageUrl: "img/uk_playerDown.png",
-        name: 'Sterling'
-        }),
-    },{ player: new Player({
-        imageUrl: "img/uk_playerDown.png",
-        name: 'Kane'
-        }),
-    }];
-
-let blueFormation = new Formation('443', 'offense');
-const blueTeam = new Team(blueFormation, bluePlayers);
+let formation = new Formation('443', 'offense');
+let team = new Team(formation, players);
 let leftUserCard = new Card({x: 10, y: 10});
 
-let redFormation = new Formation('343', 'defense');
-const redTeam = new Team(redFormation, redPlayers);
-let rightUserCard = new Card({x: 1458, y:10});
+let board = new Board(team);
 
-let Board = new Gameboard(blueTeam, redTeam);
-
-let promises = blueTeam.team.map(element => element.player.loadImage).concat(redTeam.team.map(element => element.player.loadImage));
+let promises = team.elements.map(element => element.player.loadImage);
 promises.push(leftUserCard);
-promises.push(rightUserCard);
 
 Promise.all(promises)
 .then(done => {
-    Board.drawTeam(blueTeam);
-    Board.drawTeam(redTeam);
-    Board.drawMoveCursors();
+    board.drawTeam(team);
+    board.drawMoveCursors();
 });
+
+let game = new Game();
