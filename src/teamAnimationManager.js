@@ -1,15 +1,14 @@
-class TeamAnimationManager {
+class TeamAnimationManager extends EventTarget {
     #cancelAnimationRequest;
-    #isPlaying;
     #targetCoordinates;
     #targetDelta = { x: 0, y: 0 };
     #moveRequestCursorPosition;
     #playerMovedEvent;
 
     constructor (player, position) {
+        super();
         this.frameNumber = 0;
         this.#cancelAnimationRequest = false;
-        this.#isPlaying = false;
         this.player = player;
         this.position = position;
         this.previousPosition = position;
@@ -64,8 +63,8 @@ class TeamAnimationManager {
                     }
                 }
             });
-            document.dispatchEvent(this.#playerMovedEvent);
-            Board.clearPlayerRect({
+            this.player.dispatchEvent(this.#playerMovedEvent);
+            board.clearPlayerRect({
                 player: this.player,
                 position: {
                     x: this.position.x, 
@@ -78,27 +77,28 @@ class TeamAnimationManager {
             });
             this.position.x += this.#targetDelta.x;
             this.position.y += this.#targetDelta.y;
-            Board.find
-            Board.drawMoveCursors();
-            Board.drawPlayer(this.player, this.position, this.frameNumber);
+            board.find
+            board.drawMoveCursors();
+            board.drawPlayer(this.player, this.position, this.frameNumber);
             this.frameNumber++;
         } 
     }
 
     cancelAnimation = () => {
-        this.#isPlaying = false;
+        this.player.clearMoving();
+        this.player.setMoveDone();
         this.#cancelAnimationRequest = true;
         this.#targetCoordinates = null;
         this.#targetDelta = { x: 0, y: 0 };
     }
 
     startAnimation = () => {
-        this.#isPlaying = true;
+        this.player.setMoving();
         this.#cancelAnimationRequest = false;
         this.#animateSprite();
     }
 
-    isPlaying = () => this.#isPlaying;
+    isPlaying = () => this.player.moving;
 
     setTargetCoordinates = (target) => {
         try {
