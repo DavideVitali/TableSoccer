@@ -11,8 +11,24 @@ class Player extends EventTarget {
         this.loadImage = loadImage(imageUrl);
         this.stats = stats;
 
-        this.addEventListener('playermoved', (e) => { console.log(e) });
+        this.addEventListener('playermoved', (e) => { 
+            this.clearMoveRequest();
+            this.clearMoveDone();
+            this.setMoving();
+            this.logStatus();
+        });
+
+        this.addEventListener('playerstopped', (e) => { 
+            this.clearMoveRequest();
+            this.clearMoving();
+            this.setMoveDone();
+            this.logStatus();
+        });
     };
+
+    logStatus = () => {
+        //console.log(`moveRequest: ${this.moveRequest}, moving: ${this.moving}, moveDone: ${this.moveDone}`);
+    }
 
     get moveRequest() {
         return this.#_moveRequest === true;

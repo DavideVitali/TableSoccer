@@ -1,5 +1,6 @@
-class Board {
+class Board extends EventTarget {
     constructor(team) {
+        super();
         this.fieldCanvas = document.getElementById('Field');
         this.fieldContext = this.fieldCanvas.getContext('2d');
         this.mouseCanvas = document.getElementById('MouseEvents');
@@ -24,11 +25,7 @@ class Board {
             this.animationManager.push(new TeamAnimationManager(team.elements[i].player, team.elements[i].position));
         }
         
-        document.addEventListener('playermoved', (e) => {
-            console.log(e.target);
-            this.checkPlayerCollisions(e.detail.player, e.detail.position)
-        });
-        document.addEventListener('playercollision', (e) => this.drawPlayer(e.detail.player, e.detail.position, 0));
+        this.addEventListener('playercollision', (e) => this.drawPlayer(e.detail.player, e.detail.position, 0));
     }
 
     drawTeam = arr => {
@@ -134,7 +131,7 @@ class Board {
                             position: e.position
                         }
                     });
-                    document.dispatchEvent(playerCollision);
+                    this.dispatchEvent(playerCollision);
                 }
             }
         });

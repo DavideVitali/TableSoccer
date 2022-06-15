@@ -3,7 +3,6 @@ class TeamAnimationManager extends EventTarget {
     #targetCoordinates;
     #targetDelta = { x: 0, y: 0 };
     #moveRequestCursorPosition;
-    #playerMovedEvent;
 
     constructor (player, position) {
         super();
@@ -25,7 +24,7 @@ class TeamAnimationManager extends EventTarget {
         });
         
         // animation speed settings
-        this.fpsInterval = 1000 / 12;
+        this.fpsInterval = 1000 / 24;
         this.animationStartTimestamp;
 
         // 1 player step = 16 px;
@@ -49,12 +48,19 @@ class TeamAnimationManager extends EventTarget {
 
         let elapsedTime = Date.now() - this.animationStartTimestamp;
         if (elapsedTime > this.fpsInterval) {
+            console.log(elapsedTime ,this.fpsInterval);
             if (this.frameNumber % 2 == 0 && this.#cancelAnimationRequest == true) {
                 window.cancelAnimationFrame(requestId);
+                let playerStoppedEvent = new CustomEvent('playerstopped', {
+                    detail: {
+                        player: this.player
+                    }
+                });
+                this.player.dispatchEvent(playerStoppedEvent);
             }
 
             this.animationStartTimestamp = Date.now();// - (elapsedTime % this.fpsInterval);
-            this.#playerMovedEvent = new CustomEvent('playermoved', { 
+            let playerMovedEvent = new CustomEvent('playermoved', { 
                 detail: { 
                     player: this.player,
                     position: {
@@ -63,7 +69,7 @@ class TeamAnimationManager extends EventTarget {
                     }
                 }
             });
-            this.player.dispatchEvent(this.#playerMovedEvent);
+            this.player.dispatchEvent(playerMovedEvent);
             board.clearPlayerRect({
                 player: this.player,
                 position: {
