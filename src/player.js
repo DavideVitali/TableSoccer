@@ -1,7 +1,8 @@
 class Player extends EventTarget {
-    #_moveRequest;
     #_moving;
     #_moveDone;
+    #_selected;
+    #_position;
 
     constructor({imageUrl, portraitUrl, name, stats}) {
         super();
@@ -10,40 +11,25 @@ class Player extends EventTarget {
         this.isLoaded = false;
         this.loadImage = loadImage(imageUrl);
         this.stats = stats;
+        this.#_selected = false;
 
         this.addEventListener('playermoved', (e) => { 
-            this.clearMoveRequest();
             this.clearMoveDone();
             this.setMoving();
-            this.logStatus();
         });
 
         this.addEventListener('playerstopped', (e) => { 
-            this.clearMoveRequest();
             this.clearMoving();
             this.setMoveDone();
-            this.logStatus();
+        });
+
+        this.addEventListener('playerclick', (e) => {
+            this.#_selected = !this.selected;
         });
     };
 
-    logStatus = () => {
-        //console.log(`moveRequest: ${this.moveRequest}, moving: ${this.moving}, moveDone: ${this.moveDone}`);
-    }
-
-    get moveRequest() {
-        return this.#_moveRequest === true;
-    }
-
-    setMoveRequest = () => {
-        if (!this.#_moveRequest) {
-            this.#_moveRequest = true;
-        } else {
-            throw new Error(`Hai già mosso ${this.name}.`);
-        }
-    }
-
-    clearMoveRequest = () => {
-        this.#_moveRequest = null;
+    get available() {
+        return this.#_moving !== true && this.#_moveDone !== true;
     }
 
     get moving() {
@@ -69,4 +55,21 @@ class Player extends EventTarget {
     clearMoveDone = () => {
         this.#_moveDone = null;
     }   
+
+    resetStatus = () => {
+        this.clearMoving();
+        this.clearMoveDone();
+    }
+
+    get selected() {
+        return this.#_selected
+    }
+
+    select = () => {
+        this.#_selected = true;
+    }
+
+    deselect = () => {
+        this.#_selected = false;
+    }
 }

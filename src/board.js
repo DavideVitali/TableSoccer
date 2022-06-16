@@ -18,11 +18,11 @@ class Board extends EventTarget {
             this.fieldContext.drawImage(fieldImage, 0, 0);
         }
 
-        this.animationManager = []
+        this.controller = []
         for(let i = 0; i < 11; i++) {
             // la formazione va trasformata in posizione effettiva
             team.elements[i].position = this.formationToActualCoordinates(team.elements[i].position);
-            this.animationManager.push(new TeamAnimationManager(team.elements[i].player, team.elements[i].position));
+            this.controller.push(new Controller(team.elements[i].player, team.elements[i].position));
         }
         
         this.addEventListener('playercollision', (e) => this.drawPlayer(e.detail.player, e.detail.position, 0));
@@ -72,8 +72,8 @@ class Board extends EventTarget {
     drawMoveCursors = () => {
         let ctx = this.mouseContext;
         ctx.clearRect(0, 0, this.mouseCanvas.width, this.mouseCanvas.height); 
-        this.animationManager.map(e => {
-            if (!e.player.moveRequest && !e.player.moving && !e.player.moveDone) {
+        this.controller.map(e => {
+            if (e.player.moving !== true && e.player.moveDone !== true) {
                 let startpoint = { 
                     x: e.position.x + e.player.htmlImage.width / 4 / 2,
                     y: e.position.y + e.player.htmlImage.height + 4
@@ -109,7 +109,7 @@ class Board extends EventTarget {
      * Find and dispatch whether a player's sprite is moving through another player's sprite
      */
     checkPlayerCollisions = (currentPlayer, currentPosition) => {
-        this.animationManager.map(e => {
+        this.controller.map(e => {
             if (e.player.htmlImage.id !== currentPlayer.htmlImage.id) {                
                 let width = e.player.htmlImage.width / 4;
                 let height = e.player.htmlImage.height;

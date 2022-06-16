@@ -24,49 +24,43 @@
 let mouseEventsCanvas = document.getElementById('MouseEvents');
 
 mouseEventsCanvas.addEventListener('click', (e) => {
-    let previousPlayer = game.selectedPlayer;
     let coords = { x: e.pageX - board.leftUserCanvas.width, y: e.pageY };
     let player = team.findPlayerByCoordinates(coords);
-    let animationManager;
+    let controller;
      
-    // if (bluePlayerIndex || bluePlayerIndex == 0) {
-    //     animationManager = board.blueTeamAnimationManager[bluePlayerIndex];
-    //     board.selectedPlayerIndex = bluePlayerIndex;
-    // } else if (redPlayerIndex || redPlayerIndex == 0) {
-    //     animationManager = board.redTeamAnimationManager[redPlayerIndex];
-    //     board.selectedPlayerIndex = redPlayerIndex;
-    // } 
-
     if (player) {
-        game.selectedPlayer = player;
-        board.drawPlayerCard(leftUserCard, player);
+        let playerClick = new Event('playerclick');
+        player.dispatchEvent(playerClick);
+
+        if (player.selected === false) {
+            game.selectNewPlayer = player;
+            board.drawPlayerCard(leftUserCard, player);
+        } else {
+            /** giocatore deselezionato */
+        }
+        
     }
 
-    if (player && previousPlayer && player.name === previousPlayer.name) {
-        console.log('stesso giocatore');
-        // cancella il cerchio di massimo movimento    
-    }
-
+    // è stato premuto un giocatore senza che ve ne fosse già uno selezionato prima
     if (player && !game.selectedPlayer) {
-        animationManager = board.animationManager.find(e => e.player.name == player.name);
-        let position = animationManager.position;
-        if (!player.moveDone && !player.moving && !player.moveRequest) {
+        controller = board.controller.find(e => e.player.name == player.name);
+        let position = controller.position;
+        if (controller.player.available) {
             board.drawMaximumMovement(player, position);
         }
     }
     
+    // è stato premuto un punto del campo con un giocatore già selezionato, quindi si deve muovere il giocatore
     if (!player && game.selectedPlayer)
     {
-        animationManager = board.animationManager.find(e => e.player.name == game.selectedPlayer.name);
-        if (animationManager.isPlaying() === false) {
-            try {
-                animationManager.setTargetCoordinates(coords);
-            } catch (error) {
-                alert(error);
-                return;
-            }
-            animationManager.startAnimation();
-            game.clearSelectedPlayer();
+        controller = board.controller.find(e => e.player.name == game.selectedPlayer.name);
+        if (controller.player.available !== true) {
+            alert(`Hai già mosso ${controller.player.name}.`);
+            return;
         }
+
+        controller.setTargetCoordinates(coords);
+        controller.startAnimation();
+        game.clearSelectedPlayer();
     }
 });
