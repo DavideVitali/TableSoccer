@@ -1,35 +1,51 @@
 class Controller extends EventTarget {
-    #cancelAnimationRequest;
-    #targetCoordinates;
-    #targetDelta = { x: 0, y: 0 };
-    #previousCollision;
-    #moveRequestCursorPosition;
+    #_cancelAnimationRequest;
+    #_targetCoordinates;
+    #_targetDelta = { x: 0, y: 0 };
+    #_previousCollision;
+    #_moveRequestCursorPosition;
+    #_player;
 
     constructor (player, position) {
         super();
         this.frameNumber = 0;
-        this.#cancelAnimationRequest = false;
-        this.player = player;
-        this.position = position;
-        this.previousPosition = position;
+        this.#_cancelAnimationRequest = false;
+        this.#_player = player;
+        this.#_player.position = position;
         
         //// ----------- qui l'immagine non è stata ancora caricata
-        this.player.loadImage.then(img => {
-            this.player.htmlImage = img;
-            this.player.htmlImage.setAttribute('id', this.player.name);
-            this.player.isLoaded = true;
-            this.#moveRequestCursorPosition = { 
+        this.#_player.loadImage.then(img => {
+            this.#_player.htmlImage = img;
+            this.#_player.htmlImage.setAttribute('id', this.#_player.name);
+            this.#_player.isLoaded = true;
+            this.#_moveRequestCursorPosition = { 
                 x: position.x + img.width / 4 / 2,
                 y: position.y + img.height + 4
             };
         });
         
         // animation speed settings
-        this.fpsInterval = 1000 / 100;
+        this.fpsInterval = 1000 / 8;
         this.animationStartTimestamp;
 
         // 1 player step = 16 px;
         this.playerStepLength = 16;
+    }
+
+    get player() {
+        return this.#_player;
+    }
+
+    set player(p) {
+        this.#_player = p;
+    }
+
+    get position() {
+        return this.#_player.position;
+    }
+
+    set position(position) {
+        this.#_player.position = position;
     }
 
     #animateSprite = (timestamp) => {
@@ -39,9 +55,9 @@ class Controller extends EventTarget {
             this.animationStartTimestamp = timestamp;
         }
         
-        if (this.#targetCoordinates) {
-            let proximityX = Math.floor(Math.abs(this.#targetCoordinates.x - this.position.x));
-            let proximityY = Math.floor(Math.abs(this.#targetCoordinates.y - this.position.y));
+        if (this.#_targetCoordinates) {
+            let proximityX = Math.floor(Math.abs(this.#_targetCoordinates.x - this.#_player.position.x));
+            let proximityY = Math.floor(Math.abs(this.#_targetCoordinates.y - this.#_player.position.y));
             if ( proximityX == 0 && proximityY == 0 ) {
                 this.cancelAnimation();
             }
@@ -50,79 +66,79 @@ class Controller extends EventTarget {
         let elapsedTime = Date.now() - this.animationStartTimestamp;
 
         if (elapsedTime > this.fpsInterval) {
-            if (this.#cancelAnimationRequest == true) {
+            if (this.#_cancelAnimationRequest == true) {
                 window.cancelAnimationFrame(rafId);
             }
 
             this.animationStartTimestamp = Date.now();
 
             board.clearPlayerRect({
-                player: this.player,
+                player: this.#_player,
                 position: {
-                    x: this.position.x, 
-                    y: this.position.y 
+                    x: this.#_player.position.x, 
+                    y: this.#_player.position.y 
                 }, 
                 dimension: { 
-                    width: this.player.htmlImage.width / 4, 
-                    height: this.player.htmlImage.height 
+                    width: this.#_player.htmlImage.width / 4, 
+                    height: this.#_player.htmlImage.height 
                 }
             });
 
-            this.position.x += this.#targetDelta.x;
-            this.position.y += this.#targetDelta.y;
+            this.#_player.position.x += this.#_targetDelta.x;
+            this.#_player.position.y += this.#_targetDelta.y;
             board.drawMoveCursors();
-            board.drawPlayer(this.player, this.position, this.frameNumber);
+            board.drawPlayer(this.#_player, this.#_player.position, this.frameNumber);
             let playerMovedEvent = new CustomEvent('playermoved', { 
                 detail: { 
-                    player: this.player,
+                    player: this.#_player,
                     position: {
-                        x: this.position.x,
-                        y: this.position.y 
+                        x: this.#_player.position.x,
+                        y: this.#_player.position.y 
                     }
                 }
             });
-            this.player.dispatchEvent(playerMovedEvent);
+            this.#_player.dispatchEvent(playerMovedEvent);
             this.frameNumber++;
 
-            if (this.#cancelAnimationRequest === true) {
+            if (this.#_cancelAnimationRequest === true) {
                 let playerStoppedEvent = new CustomEvent('playerstopped', {
                     detail: {
-                        player: this.player
+                        player: this.#_player
                     }
                 });
-                this.player.dispatchEvent(playerStoppedEvent);
+                this.#_player.dispatchEvent(playerStoppedEvent);
 
                 // reset
                 this.frameNumber = 0;
-                this.#cancelAnimationRequest = false;
+                this.#_cancelAnimationRequest = false;
             }
         }
 
     }
 
     cancelAnimation = () => {
-        this.player.clearMoving();
-        this.player.setMoveDone();
-        this.#cancelAnimationRequest = true;
-        this.#targetCoordinates = null;
-        this.#targetDelta = { x: 0, y: 0 };
+        this.#_player.clearMoving();
+        this.#_player.setMoveDone();
+        this.#_cancelAnimationRequest = true;
+        this.#_targetCoordinates = null;
+        this.#_targetDelta = { x: 0, y: 0 };
     }
 
     startAnimation = () => {
-        this.player.setMoving();
-        this.#cancelAnimationRequest = false;
+        this.#_player.setMoving();
+        this.#_cancelAnimationRequest = false;
         this.#animateSprite();
     }
 
-    isPlaying = () => this.player.moving;
+    isPlaying = () => this.#_player.moving;
 
     setTargetCoordinates = (target) => {
-        if (this.player.available !== true) {
-            throw new Error(`Hai già mosso ${this.player.name}`);
+        if (this.#_player.available !== true) {
+            throw new Error(`Hai già mosso ${this.#_player.name}`);
         } 
         
-        this.#targetCoordinates = target;
-        this.#targetDelta.x = (this.#targetCoordinates.x - this.position.x) / this.playerStepLength;
-        this.#targetDelta.y = (this.#targetCoordinates.y - this.position.y) / this.playerStepLength;
+        this.#_targetCoordinates = target;
+        this.#_targetDelta.x = (this.#_targetCoordinates.x - this.position.x) / this.playerStepLength;
+        this.#_targetDelta.y = (this.#_targetCoordinates.y - this.position.y) / this.playerStepLength;
     } 
 }

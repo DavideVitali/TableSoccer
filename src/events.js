@@ -29,12 +29,20 @@ mouseEventsCanvas.addEventListener('click', (e) => {
     let controller;
      
     if (player) {
-        let playerClick = new Event('playerclick');
-        player.dispatchEvent(playerClick);
+        controller = board.controller.find(e => e.player.name == player.name);
 
-        if (player.selected === false) {
-            game.selectNewPlayer = player;
+        let playerClick = new CustomEvent('playerclick', {
+            detail: {
+                player: player
+            }
+        });
+        player.dispatchEvent(playerClick);
+        board.dispatchEvent(playerClick);
+
+        if (player.selected === true) {
+            game.selectedPlayer = player;
             board.drawPlayerCard(leftUserCard, player);
+            board.drawMaximumMovement(player, position);
         } else {
             /** giocatore deselezionato */
         }
@@ -46,7 +54,7 @@ mouseEventsCanvas.addEventListener('click', (e) => {
         controller = board.controller.find(e => e.player.name == player.name);
         let position = controller.position;
         if (controller.player.available) {
-            board.drawMaximumMovement(player, position);
+            
         }
     }
     

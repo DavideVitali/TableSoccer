@@ -2,6 +2,11 @@ class Player extends EventTarget {
     #_moving;
     #_moveDone;
     #_selected;
+    /** The position of the player as a percentage, where:
+     * 0 = left / top
+     * 100 = right / bottom
+     * The Controller class will calculate the ACTUAL position on the screen based on the information provided by the Board class.
+     */
     #_position;
 
     constructor({imageUrl, portraitUrl, name, position, stats}) {
@@ -33,7 +38,7 @@ class Player extends EventTarget {
         return this.#_position;
     }
 
-    changePosition = (p) => {
+    set position(p) {
         this.#_position = p;
     }
 

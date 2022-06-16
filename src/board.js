@@ -21,11 +21,19 @@ class Board extends EventTarget {
         this.controller = []
         for(let i = 0; i < 11; i++) {
             // la formazione va trasformata in posizione effettiva
-            team.elements[i].position = this.formationToActualCoordinates(team.elements[i].position);
+            team.elements[i].position = this.formationToBoardCoordinates(team.elements[i].position);
             this.controller.push(new Controller(team.elements[i].player, team.elements[i].position));
         }
         
         this.addEventListener('playercollision', (e) => this.drawPlayer(e.detail.player, e.detail.position, 0));
+        this.addEventListener('playerclick', (e) => this.switchSelected(e.detail.player));
+    }
+
+    switchSelected = (player) => {
+        let selectedPlayers = this.controller.find(c => c.player.selected === true && c.player.name !== player.name);
+        if (selectedPlayers && selectedPlayers.length > 0) {
+            selectedPlayers.forEach(c => c.player.deselect());
+        } 
     }
 
     drawTeam = arr => {
@@ -42,10 +50,17 @@ class Board extends EventTarget {
         ctx.fillText(player.name, ((card.template.width - nameWidth) / 2) + card.position.x, (202 + card.position.y));
     }
 
-    formationToActualCoordinates(position) {
+    formationToBoardCoordinates = (position) => {
         return { 
-            x: (position.x * this.playersCanvas.width / 100),
-            y: (position.y * this.playersCanvas.height / 100)
+            x: Math.round(position.x * this.playersCanvas.width / 100),
+            y: Math.round(position.y * this.playersCanvas.height / 100)
+        };
+    }
+
+    boardCoordinatesToFormation = (position) => {
+        return {
+            x: Math.round(this.playersCanvas.width * 100 / position.x),
+            y:Math.round(this.playersCanvas.height * 100 / position.y)
         };
     }
 
@@ -75,8 +90,8 @@ class Board extends EventTarget {
         this.controller.map(e => {
             if (e.player.moving !== true && e.player.moveDone !== true) {
                 let startpoint = { 
-                    x: e.position.x + e.player.htmlImage.width / 4 / 2,
-                    y: e.position.y + e.player.htmlImage.height + 4
+                    x: e.player.position.x + e.player.htmlImage.width / 4 / 2,
+                    y: e.player.position.y + e.player.htmlImage.height + 4
                 };
     
                 let ctx = this.mouseContext;
