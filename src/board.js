@@ -30,14 +30,16 @@ class Board extends EventTarget {
         });
 
         this.addEventListener('playerclick', (e) => {
+            console.log(e.detail.player.selected);
             this.clearCanvas(this.mouseContext, this.mouseCanvas);
             this.clearCanvas(this.leftUserContext, this.leftUserCanvas);
             this.drawMoveCursors();
             this.switchSelected(e.detail.player)
             if (e.detail.player.selected === true) {
                 this.drawPlayerCard(leftUserCard, e.detail.player);
-                this.drawMaximumMovement(e.detail.player);
-            }
+                this.setMovementCursor();
+                //this.drawMaximumMovement(e.detail.player);
+            } 
         });
     }
 
@@ -145,6 +147,16 @@ class Board extends EventTarget {
         let cv = this.playersCanvas;
         cv.requestPointerLock = cv.requestPointerLock || cv.mozRequestPointerLock;
         cv.requestPointerLock();        
+    }
+
+    setMovementCursor = () => {
+        let body = document.querySelector('body');
+
+        if (!body.classList.contains('selected-player')) {
+            body.classList.add('selected-player');
+        } else {
+            body.classList.remove('selected-player');
+        }
     }
 
     /**

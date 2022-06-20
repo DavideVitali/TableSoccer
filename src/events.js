@@ -1,23 +1,5 @@
 // window.addEventListener('mousemove', (e) => {
-//     let coords = { x: e.pageX, y: e.pageY };
-//     let bluePlayerIndex = blueTeam.findPlayerByCoordinates(coords);
-//     let redPlayerIndex = redTeam.findPlayerByCoordinates(coords);
-//     let hoveringPlayer = null;
-//     let body = document.querySelector('body');
 
-//     if (bluePlayerIndex || bluePlayerIndex == 0) {
-//         hoveringPlayer = blueTeam.team[bluePlayerIndex].player;
-//     } else if (redPlayerIndex || redPlayerIndex == 0) {
-//         hoveringPlayer = redTeam.team[redPlayerIndex].player;
-//     }
-
-//     if (hoveringPlayer != null || board.selectedPlayer != null) {
-//         if (!body.classList.contains('selected-player')) {
-//             body.classList.add('selected-player');
-//         } 
-//     } else {
-//         body.classList.remove('selected-player');
-//     }
 
 // });
 
@@ -36,7 +18,7 @@ mouseEventsCanvas.addEventListener('click', (e) => {
                 player: player
             }
         });
-        player.dispatchEvent(playerClick);
+        player.dispatchEvent(playerClick); // 
         board.dispatchEvent(playerClick);
 
         if (player.selected === true) {

@@ -3,7 +3,6 @@ class Player extends EventTarget {
     #_moveDone;
     #_selected;
     #_position;
-    #_collisionHistory;
 
     constructor({imageUrl, portraitUrl, name, position, stats}) {
         super();
@@ -14,7 +13,6 @@ class Player extends EventTarget {
         this.stats = stats;
         this.#_selected = false;
         this.#_position = position;
-        this.#_collisionHistory = null;
 
         this.addEventListener('playermoved', (e) => { 
             this.clearMoveDone();
@@ -36,11 +34,6 @@ class Player extends EventTarget {
 
         })
     };
-
-    get collisionHistory() {
-        return this.#_collisionHistory;
-    }
-
     
     get position() {
         return this.#_position;

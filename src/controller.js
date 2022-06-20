@@ -25,7 +25,7 @@ class Controller extends EventTarget {
         });
         
         // animation speed settings
-        this.fpsInterval = 1000 / 1;
+        this.fpsInterval = 1000 / 24;
         this.animationStartTimestamp;
 
         // 1 player step = 16 px;
@@ -55,6 +55,7 @@ class Controller extends EventTarget {
             this.animationStartTimestamp = timestamp;
         }
         
+        /* the animation is flagged to be canceled when the player reaches the target position */
         if (this.#_targetCoordinates) {
             let proximityX = Math.floor(Math.abs(this.#_targetCoordinates.x - this.#_player.position.x));
             let proximityY = Math.floor(Math.abs(this.#_targetCoordinates.y - this.#_player.position.y));
@@ -93,7 +94,7 @@ class Controller extends EventTarget {
             
             this.#_player.position.x += this.#_targetDelta.x;
             this.#_player.position.y += this.#_targetDelta.y;
-            board.drawMoveCursors();
+            //board.drawMoveCursors();
             this.frameNumber++;
             board.drawPlayer(this.#_player, this.#_player.position, this.frameNumber);
             let playerMovedEvent = new CustomEvent('playermoved', { 
