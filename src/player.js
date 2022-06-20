@@ -1,4 +1,5 @@
 class Player extends EventTarget {
+    #_waiting;
     #_moving;
     #_moveDone;
     #_selected;
@@ -13,9 +14,10 @@ class Player extends EventTarget {
         this.stats = stats;
         this.#_selected = false;
         this.#_position = position;
+        this.#_waiting = false;
 
-        this.addEventListener('playermoved', (e) => { 
-            this.clearMoveDone();
+        this.addEventListener('playermoved', (e) => {
+            this.clearWaiting();
             this.setMoving();
             console.log(e.type);
         });
@@ -28,6 +30,10 @@ class Player extends EventTarget {
 
         this.addEventListener('playerclick', (e) => {
             this.#_selected = !this.selected;
+
+            if (this.selected === true && this.available === true) {
+                this.setWaiting();
+            } 
         });
 
         this.addEventListener('playercollision', (e) => {
@@ -44,7 +50,19 @@ class Player extends EventTarget {
     }
 
     get available() {
-        return this.#_moving !== true && this.#_moveDone !== true;
+        return this.#_moving !== true && this.#_moveDone !== true && this.#_waiting !== true;
+    }
+
+    get waiting() {
+        return this.#_waiting;
+    }
+
+    setWaiting = () => {
+        this.#_waiting = true;
+    }
+
+    clearWaiting = () => {
+        this.#_waiting = false;
     }
 
     get moving() {
@@ -72,6 +90,7 @@ class Player extends EventTarget {
     }   
 
     resetStatus = () => {
+        this.clearWaiting();
         this.clearMoving();
         this.clearMoveDone();
     }
@@ -84,7 +103,9 @@ class Player extends EventTarget {
         this.#_selected = true;
     }
 
+    /* This is loop-called from board when selecting another player */
     deselect = () => {
         this.#_selected = false;
+        this.#_waiting = false;
     }
 }

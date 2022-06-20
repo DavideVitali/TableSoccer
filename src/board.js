@@ -10,7 +10,14 @@ class Board extends EventTarget {
         this.leftUserCanvas = document.getElementById('LeftUser');
         this.leftUserContext = this.leftUserCanvas.getContext('2d')
         this.rightUserCanvas = document.getElementById('RightUser');
-        this.rightUserContext = this.rightUserCanvas.getContext('2d')
+        this.rightUserContext = this.rightUserCanvas.getContext('2d');
+
+        // pointerLock API setup
+        this.mouseCanvas.requestPointerLock = this.mouseCanvas.requestPointerLock || this.mouseCanvas.mozRequestPointerLock;
+        document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
+        document.addEventListener('pointerlockchange', this.setMaximumMovement);
+        document.addEventListener('mozpointerlockchange', this.setMaximumMovement);
+        this.pointerLockStartPoint;
 
         const fieldImage = new Image();
         fieldImage.src = "img/map.png";  
@@ -30,16 +37,25 @@ class Board extends EventTarget {
         });
 
         this.addEventListener('playerclick', (e) => {
-            console.log(e.detail.player.selected);
+            let clickedPlayer = e.detail.player;
+
             this.clearCanvas(this.mouseContext, this.mouseCanvas);
             this.clearCanvas(this.leftUserContext, this.leftUserCanvas);
             this.drawMoveCursors();
-            this.switchSelected(e.detail.player)
-            if (e.detail.player.selected === true) {
-                this.drawPlayerCard(leftUserCard, e.detail.player);
-                this.setMovementCursor();
-                //this.drawMaximumMovement(e.detail.player);
-            } 
+            this.switchSelected(clickedPlayer)
+            if (clickedPlayer.selected && clickedPlayer.selected === true) {
+                this.drawPlayerCard(leftUserCard, clickedPlayer);
+            } else {
+                // what happens here?
+            }
+
+            if (document.pointerLockElement === this.mouseCanvas) {
+                document.removeEventListener("mousemove", () => this.updateMaximumMovement(clickedPlayer));
+                document.exitPointerLock();
+            } else {
+                this.mouseCanvas.requestPointerLock();
+                document.addEventListener("mousemove", () => this.updateMaximumMovement(clickedPlayer));
+            }
         });
     }
 
@@ -66,6 +82,26 @@ class Board extends EventTarget {
         ctx.drawImage(card.template, card.position.x, card.position.y);
         const nameWidth = ctx.measureText(player.name).width;
         ctx.fillText(player.name, ((card.template.width - nameWidth) / 2) + card.position.x, (202 + card.position.y));
+    }
+
+    findWaitingPlayer = () => {
+        let result = [];
+
+        result = this.controller.map(element => {
+            if (element.player.waiting === true) {
+                result.push(element.player);
+            }
+        });
+
+        if (result.length === 0) {
+            return null;
+        }
+
+        if (result.length > 1) {
+            throw new Error(`There are too many players are in 'waiting' state`);
+        }
+
+        return result[0];
     }
 
     formationToBoardCoordinates = (position) => {
@@ -127,26 +163,27 @@ class Board extends EventTarget {
 
     // disegna il cerchio di massimo movimento di un giocatore
     drawMaximumMovement = (player) => {
-        let dist = 200; // mock, poi dalle stats
+        let r = 5;
         let center = { 
             x: player.position.x + player.htmlImage.width / 4 / 2,
             y: player.position.y + player.htmlImage.height + 4
         };
         let ctx = this.mouseContext;
         ctx.beginPath();
-        ctx.arc(center.x, center.y, dist, 0, 2 * Math.PI);
+        ctx.arc(center.x, center.y, r, 0, 2 * Math.PI);
         ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
         ctx.fill();
     }
 
     clearMaximumMovement = () => {
-        this.mouseContext.clearRect(0,0, this.mouseCanvas.width, this.mouseCanvas.height);
+
     }
 
-    setMaximumMovement = (player) => {
-        let cv = this.playersCanvas;
-        cv.requestPointerLock = cv.requestPointerLock || cv.mozRequestPointerLock;
-        cv.requestPointerLock();        
+    setMaximumMovement = () => {
+        if (document.pointerLockElement === this.mouseCanvas) {
+            console.log('pointer locked');
+        } else {
+            console.log('pointer unlocked');        }       
     }
 
     setMovementCursor = () => {
@@ -155,6 +192,14 @@ class Board extends EventTarget {
         if (!body.classList.contains('selected-player')) {
             body.classList.add('selected-player');
         } else {
+            body.classList.remove('selected-player');
+        }
+    }
+
+    clearMovementCursor = () => {
+        let body = document.querySelector('body');
+
+        if (body.classList.contains('selected-player')) {
             body.classList.remove('selected-player');
         }
     }
@@ -189,5 +234,9 @@ class Board extends EventTarget {
                 }
             }
         });
+    }
+
+    updateMaximumMovement = (player) => {
+        this.drawMaximumMovement(player);
     }
 }

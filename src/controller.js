@@ -25,7 +25,7 @@ class Controller extends EventTarget {
         });
         
         // animation speed settings
-        this.fpsInterval = 1000 / 24;
+        this.fpsInterval = 1000 / 50;
         this.animationStartTimestamp;
 
         // 1 player step = 16 px;
@@ -122,15 +122,12 @@ class Controller extends EventTarget {
     }
 
     cancelAnimation = () => {
-        this.#_player.clearMoving();
-        this.#_player.setMoveDone();
         this.#_cancelAnimationRequest = true;
         this.#_targetCoordinates = null;
         this.#_targetDelta = { x: 0, y: 0 };
     }
 
     startAnimation = () => {
-        this.#_player.setMoving();
         this.#_cancelAnimationRequest = false;
         this.#animateSprite();
     }
@@ -138,10 +135,13 @@ class Controller extends EventTarget {
     isPlaying = () => this.#_player.moving;
 
     setTargetCoordinates = (target) => {
-        if (this.#_player.available !== true) {
-            throw new Error(`Hai già mosso ${this.#_player.name}`);
+        if (this.player.moveDone === true) {
+            throw new Error(`Hai già mossicchiato ${this.#_player.name}`);
         } 
         
+        // target coordinates are set at the feet of the player:
+        target.x -= this.#_player.htmlImage.width / 4 / 2;
+        target.y -= this.#_player.htmlImage.height;
         this.#_targetCoordinates = target;
 
         let dx = this.#_targetCoordinates.x - this.#_player.position.x;

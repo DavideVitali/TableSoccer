@@ -18,7 +18,8 @@ mouseEventsCanvas.addEventListener('click', (e) => {
                 player: player
             }
         });
-        player.dispatchEvent(playerClick); // 
+
+        player.dispatchEvent(playerClick);
         board.dispatchEvent(playerClick);
 
         if (player.selected === true) {
@@ -27,28 +28,31 @@ mouseEventsCanvas.addEventListener('click', (e) => {
             /** giocatore deselezionato */
         }
         
-    }
-
-    // è stato premuto un giocatore senza che ve ne fosse già uno selezionato prima
-    if (player && !game.selectedPlayer) {
-        controller = board.controller.find(e => e.player.name == player.name);
-        let position = controller.position;
-        if (controller.player.available) {
-            
+    } else {
+        
+        let waitingPlayer;
+        try {
+            waitingPlayer = board.findWaitingPlayer();
+        } catch (error) {
+            alert(error);
         }
-    }
-    
-    // è stato premuto un punto del campo con un giocatore già selezionato, quindi si deve muovere il giocatore
-    if (!player && game.selectedPlayer)
-    {
+
         controller = board.controller.find(e => e.player.name == game.selectedPlayer.name);
-        if (controller.player.available !== true) {
+        if (controller.player.moveDone === true) {
             alert(`Hai già mosso ${controller.player.name}.`);
             return;
         }
 
         controller.setTargetCoordinates(coords);
         controller.startAnimation();
+        
+        let playerClick = new CustomEvent('playerclick', {
+            detail: {
+                player: game.selectedPlayer
+            }
+        });
+
         game.clearSelectedPlayer();
+        board.dispatchEvent(playerClick);
     }
 });
