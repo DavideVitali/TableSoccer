@@ -2,12 +2,8 @@ class Player extends EventTarget {
     #_moving;
     #_moveDone;
     #_selected;
-    /** The position of the player as a percentage, where:
-     * 0 = left / top
-     * 100 = right / bottom
-     * The Controller class will calculate the ACTUAL position on the screen based on the information provided by the Board class.
-     */
     #_position;
+    #_collisionHistory;
 
     constructor({imageUrl, portraitUrl, name, position, stats}) {
         super();
@@ -18,22 +14,34 @@ class Player extends EventTarget {
         this.stats = stats;
         this.#_selected = false;
         this.#_position = position;
+        this.#_collisionHistory = null;
 
         this.addEventListener('playermoved', (e) => { 
             this.clearMoveDone();
             this.setMoving();
+            console.log(e.type);
         });
 
         this.addEventListener('playerstopped', (e) => { 
             this.clearMoving();
             this.setMoveDone();
+            console.log(e.type);
         });
 
         this.addEventListener('playerclick', (e) => {
             this.#_selected = !this.selected;
         });
+
+        this.addEventListener('playercollision', (e) => {
+
+        })
     };
 
+    get collisionHistory() {
+        return this.#_collisionHistory;
+    }
+
+    
     get position() {
         return this.#_position;
     }

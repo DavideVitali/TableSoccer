@@ -25,7 +25,7 @@ class Controller extends EventTarget {
         });
         
         // animation speed settings
-        this.fpsInterval = 1000 / 8;
+        this.fpsInterval = 1000 / 1;
         this.animationStartTimestamp;
 
         // 1 player step = 16 px;
@@ -64,14 +64,17 @@ class Controller extends EventTarget {
         }
 
         let elapsedTime = Date.now() - this.animationStartTimestamp;
-
+        
         if (elapsedTime > this.fpsInterval) {
-            if (this.#_cancelAnimationRequest == true) {
+            let cancelAnimationTriggered = false;
+
+            if (this.frameNumber % 2 == 1 && this.#_cancelAnimationRequest == true) {
                 window.cancelAnimationFrame(rafId);
+                cancelAnimationTriggered = true;
             }
 
             this.animationStartTimestamp = Date.now();
-
+            
             board.clearPlayerRect({
                 player: this.#_player,
                 position: {
@@ -83,10 +86,15 @@ class Controller extends EventTarget {
                     height: this.#_player.htmlImage.height 
                 }
             });
-
+            
+            /* because collisions cause the collided players to be redrawn, moving players are drawn after
+            the redrawing of the collided ones, giving the impression they move "over" instead of "under" */
+            board.checkPlayerCollisions(this.#_player);
+            
             this.#_player.position.x += this.#_targetDelta.x;
             this.#_player.position.y += this.#_targetDelta.y;
             board.drawMoveCursors();
+            this.frameNumber++;
             board.drawPlayer(this.#_player, this.#_player.position, this.frameNumber);
             let playerMovedEvent = new CustomEvent('playermoved', { 
                 detail: { 
@@ -97,20 +105,16 @@ class Controller extends EventTarget {
                     }
                 }
             });
-            this.#_player.dispatchEvent(playerMovedEvent);
-            this.frameNumber++;
 
-            if (this.#_cancelAnimationRequest === true) {
+            this.#_player.dispatchEvent(playerMovedEvent);
+
+            if (cancelAnimationTriggered === true) {
                 let playerStoppedEvent = new CustomEvent('playerstopped', {
                     detail: {
                         player: this.#_player
                     }
                 });
                 this.#_player.dispatchEvent(playerStoppedEvent);
-
-                // reset
-                this.frameNumber = 0;
-                this.#_cancelAnimationRequest = false;
             }
         }
 
@@ -138,7 +142,11 @@ class Controller extends EventTarget {
         } 
         
         this.#_targetCoordinates = target;
-        this.#_targetDelta.x = (this.#_targetCoordinates.x - this.position.x) / this.playerStepLength;
-        this.#_targetDelta.y = (this.#_targetCoordinates.y - this.position.y) / this.playerStepLength;
+
+        let dx = this.#_targetCoordinates.x - this.#_player.position.x;
+        let dy = this.#_targetCoordinates.y - this.#_player.position.y;
+        let stepToDistance = Math.ceil(Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)) / this.playerStepLength);
+        this.#_targetDelta.x = dx / stepToDistance;
+        this.#_targetDelta.y = dy / stepToDistance;
     } 
 }

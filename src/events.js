@@ -41,8 +41,6 @@ mouseEventsCanvas.addEventListener('click', (e) => {
 
         if (player.selected === true) {
             game.selectedPlayer = player;
-            board.drawPlayerCard(leftUserCard, player);
-            board.drawMaximumMovement(player, position);
         } else {
             /** giocatore deselezionato */
         }

@@ -18,3 +18,7 @@ class Game {
         this.#_selectedPlayer = null;
     }
 }
+
+Game.prototype.subscribe = function() {
+    console.log('you have subscribed');
+}

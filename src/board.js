@@ -25,12 +25,28 @@ class Board extends EventTarget {
             this.controller.push(new Controller(team.elements[i].player, team.elements[i].position));
         }
         
-        this.addEventListener('playercollision', (e) => this.drawPlayer(e.detail.player, e.detail.position, 0));
-        this.addEventListener('playerclick', (e) => this.switchSelected(e.detail.player));
+        this.addEventListener('playercollision', (e) => {
+            this.drawPlayer(e.detail.player, e.detail.player.position, 0);
+        });
+
+        this.addEventListener('playerclick', (e) => {
+            this.clearCanvas(this.mouseContext, this.mouseCanvas);
+            this.clearCanvas(this.leftUserContext, this.leftUserCanvas);
+            this.drawMoveCursors();
+            this.switchSelected(e.detail.player)
+            if (e.detail.player.selected === true) {
+                this.drawPlayerCard(leftUserCard, e.detail.player);
+                this.drawMaximumMovement(e.detail.player);
+            }
+        });
+    }
+
+    clearCanvas = (context, canvas) => {
+        context.clearRect(0, 0, canvas.width, canvas.height);
     }
 
     switchSelected = (player) => {
-        let selectedPlayers = this.controller.find(c => c.player.selected === true && c.player.name !== player.name);
+        let selectedPlayers = this.controller.filter(c => c.player.selected === true && c.player.name !== player.name);
         if (selectedPlayers && selectedPlayers.length > 0) {
             selectedPlayers.forEach(c => c.player.deselect());
         } 
@@ -73,6 +89,7 @@ class Board extends EventTarget {
             image: player.htmlImage,
             position: position
         }
+
         this.playersContext.drawImage(
             current.image,
             (current.image.width / 4 ) * (currentStep % 4 ), 0, 
@@ -80,8 +97,8 @@ class Board extends EventTarget {
             current.position.x,
             current.position.y,
             current.image.width / 4,
-            current.image.height);            
-        }
+            current.image.height);
+    }
         
     // disegna il triangolino che segnala la disponibilità a fare un movimento
     drawMoveCursors = () => {
@@ -107,11 +124,11 @@ class Board extends EventTarget {
     }
 
     // disegna il cerchio di massimo movimento di un giocatore
-    drawMaximumMovement = (player, position) => {
+    drawMaximumMovement = (player) => {
         let dist = 200; // mock, poi dalle stats
         let center = { 
-            x: position.x + player.htmlImage.width / 4 / 2,
-            y: position.y + player.htmlImage.height + 4
+            x: player.position.x + player.htmlImage.width / 4 / 2,
+            y: player.position.y + player.htmlImage.height + 4
         };
         let ctx = this.mouseContext;
         ctx.beginPath();
@@ -120,33 +137,43 @@ class Board extends EventTarget {
         ctx.fill();
     }
 
+    clearMaximumMovement = () => {
+        this.mouseContext.clearRect(0,0, this.mouseCanvas.width, this.mouseCanvas.height);
+    }
+
+    setMaximumMovement = (player) => {
+        let cv = this.playersCanvas;
+        cv.requestPointerLock = cv.requestPointerLock || cv.mozRequestPointerLock;
+        cv.requestPointerLock();        
+    }
+
     /**
      * Find and dispatch whether a player's sprite is moving through another player's sprite
      */
-    checkPlayerCollisions = (currentPlayer, currentPosition) => {
+    checkPlayerCollisions = (player) => {
         this.controller.map(e => {
-            if (e.player.htmlImage.id !== currentPlayer.htmlImage.id) {                
+            if (e.player.htmlImage.id !== player.htmlImage.id) {                
                 let width = e.player.htmlImage.width / 4;
                 let height = e.player.htmlImage.height;
 
                 // sprites boundaries
-                let cL = currentPosition.x;
+                let cL = player.position.x;
                 let cR = cL + width;
-                let cT = currentPosition.y;
+                let cT = player.position.y;
                 let cB = cT + height;
-                let eL = e.position.x;
+                let eL = e.player.position.x;
                 let eR = eL + width;
-                let eT = e.position.y;
+                let eT = e.player.position.y;
                 let eB = eT + height;
 
                 if (cL < eR && cR > eL && cT < eB && cB > eT) {
+                    this.drawPlayer(e.player, e.player.position, 0);
                     let playerCollision = new CustomEvent('playercollision', {
                          detail: {
-                            player: e.player,
-                            position: e.position
+                            player: e.player
                         }
                     });
-                    this.dispatchEvent(playerCollision);
+                    e.player.dispatchEvent(playerCollision);
                 }
             }
         });
