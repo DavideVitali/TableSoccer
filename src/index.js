@@ -1,50 +1,68 @@
 let Module = new Formation();
 
 // per ora i giocatori hanno tutti lo stesso sprite
+let stats = {
+    offense: 100,
+    defense: 100,
+    speed: 150,
+    stamina: 100
+};
+
 let players = [
     { player: new Player({
         imageUrl: "img/ita_playerDown.png",
-        name: 'Donnarumma'
+        name: 'Donnarumma',
+        stats: stats
         }),
     },{ player: new Player({
         imageUrl: "img/ita_playerDown.png",
-        name: 'Di Lorenzo'
+        name: 'Di Lorenzo',
+        stats: stats
         }),
     },{ player: new Player({
         imageUrl: "img/ita_playerDown.png",
-        name: 'Bonucci'
+        name: 'Bonucci',
+        stats: stats
         }),
     },{ player: new Player({
         imageUrl: "img/ita_playerDown.png",
-        name: 'Chiellini'
+        name: 'Chiellini',
+        stats: stats
         }),
     },{ player: new Player({
         imageUrl: "img/ita_playerDown.png",
-        name: 'Emerson'
+        name: 'Emerson',
+        stats: stats
         }),
     },{ player: new Player({
         imageUrl: "img/ita_playerDown.png",
-        name: 'Barella'
+        name: 'Barella',
+        stats: stats
         }),
     },{ player: new Player({
         imageUrl: "img/ita_playerDown.png",
-        name: 'Jorginho'
+        name: 'Jorginho',
+        stats: stats
         }),
     },{ player: new Player({
         imageUrl: "img/ita_playerDown.png",
-        name: 'Verratti'
+        name: 'Verratti',
+        stats: stats
         }),
     },{ player: new Player({
         imageUrl: "img/ita_playerDown.png",
-        name: 'Insigne'
+        name: 'Insigne',
+        stats: stats
         }),
     },{ player: new Player({
         imageUrl: "img/ita_playerDown.png",
-        name: 'Immobile'
+        name: 'Immobile',
+        stats: stats
         }),
     },{ player: new Player({
         imageUrl: "img/ita_playerDown.png",
-        name: 'Chiesa'
+        name: 'Chiesa',
+        stats: stats
         }),
     }];
 

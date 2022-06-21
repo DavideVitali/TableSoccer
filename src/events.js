@@ -46,13 +46,13 @@ mouseEventsCanvas.addEventListener('click', (e) => {
         controller.setTargetCoordinates(coords);
         controller.startAnimation();
         
-        let playerClick = new CustomEvent('playerclick', {
-            detail: {
-                player: game.selectedPlayer
-            }
-        });
-
+        // let playerClick = new CustomEvent('playerclick', {
+            //     detail: {
+                //         player: game.selectedPlayer
+                //     }
+                // });
+                
         game.clearSelectedPlayer();
-        board.dispatchEvent(playerClick);
+        // board.dispatchEvent(playerClick);
     }
 });

@@ -17,7 +17,9 @@ class Board extends EventTarget {
         document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
         document.addEventListener('pointerlockchange', this.setMaximumMovement);
         document.addEventListener('mozpointerlockchange', this.setMaximumMovement);
-        this.pointerLockStartPoint;
+        this.movePointer;
+
+        //let updateMaxMove = updateMaximumMovement;
 
         const fieldImage = new Image();
         fieldImage.src = "img/map.png";  
@@ -50,11 +52,9 @@ class Board extends EventTarget {
             }
 
             if (document.pointerLockElement === this.mouseCanvas) {
-                document.removeEventListener("mousemove", () => this.updateMaximumMovement(clickedPlayer));
-                document.exitPointerLock();
+                this.exitPointerLock();
             } else {
-                this.mouseCanvas.requestPointerLock();
-                document.addEventListener("mousemove", () => this.updateMaximumMovement(clickedPlayer));
+                this.requestPointerLock(clickedPlayer);
             }
         });
     }
@@ -84,10 +84,62 @@ class Board extends EventTarget {
         ctx.fillText(player.name, ((card.template.width - nameWidth) / 2) + card.position.x, (202 + card.position.y));
     }
 
+    exitPointerLock = () => {
+        document.exitPointerLock();
+        console.log('removing eventListener');
+        document.removeEventListener("mousemove", this.updateMaximumMovement, false);
+    }
+    
+    requestPointerLock = (clickedPlayer) => {
+        let ts = document.getElementById('TableSoccer');
+        if (!ts.classList.contains('selected-player')) {
+            ts.classList.add('selected-player');
+        }
+
+        let start = clickedPlayer.feetPosition;
+
+        this.mouseCanvas.requestPointerLock();
+        this.movePointer = {
+            start: start,
+            radius: clickedPlayer.stats.speed,
+            current: {
+                x: start.x,
+                y: start.y
+            }
+        };
+        console.log(this.movePointer);
+        console.log('adding eventListener');
+        document.addEventListener("mousemove", this.updateMaximumMovement, false);
+    }
+
+    updateMaximumMovement = (function (e) {
+        let start = this.movePointer.start;
+        let current = this.movePointer.current;
+        let maxRadius = this.movePointer.radius;
+        
+        let nextPoint = {
+            x: current.x + e.movementX,
+            y: current.y + e.movementY
+        };
+        let dist = distance(nextPoint, start);
+        
+        if (dist < maxRadius) {
+            this.movePointer.current.x = nextPoint.x;
+            this.movePointer.current.y = nextPoint.y;
+        }
+
+        let absX = this.movePointer.current.x + this.mouseCanvas.offsetLeft
+        let absY = this.movePointer.current.y + this.mouseCanvas.offsetTop
+        let pointer = document.getElementById('MovePointer');
+        pointer.style.setProperty("display", "block");
+        pointer.style.left = `${absX - 16}px`;
+        pointer.style.top = `${absY - 16}px`;
+    }).bind(this)
+
     findWaitingPlayer = () => {
         let result = [];
 
-        result = this.controller.map(element => {
+        this.controller.map(element => {
             if (element.player.waiting === true) {
                 result.push(element.player);
             }
@@ -163,6 +215,7 @@ class Board extends EventTarget {
 
     // disegna il cerchio di massimo movimento di un giocatore
     drawMaximumMovement = (player) => {
+        console.log('here');
         let r = 5;
         let center = { 
             x: player.position.x + player.htmlImage.width / 4 / 2,
@@ -180,10 +233,9 @@ class Board extends EventTarget {
     }
 
     setMaximumMovement = () => {
-        if (document.pointerLockElement === this.mouseCanvas) {
-            console.log('pointer locked');
-        } else {
-            console.log('pointer unlocked');        }       
+        if (document.pointerLockElement !== this.mouseCanvas) {
+            this.exitPointerLock();
+        }       
     }
 
     setMovementCursor = () => {
@@ -234,9 +286,5 @@ class Board extends EventTarget {
                 }
             }
         });
-    }
-
-    updateMaximumMovement = (player) => {
-        this.drawMaximumMovement(player);
     }
 }

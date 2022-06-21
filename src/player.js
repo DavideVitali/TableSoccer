@@ -4,6 +4,7 @@ class Player extends EventTarget {
     #_moveDone;
     #_selected;
     #_position;
+    #_stats;
 
     constructor({imageUrl, portraitUrl, name, position, stats}) {
         super();
@@ -11,7 +12,7 @@ class Player extends EventTarget {
         this.name = name;
         this.isLoaded = false;
         this.loadImage = loadImage(imageUrl);
-        this.stats = stats;
+        this.#_stats = stats;
         this.#_selected = false;
         this.#_position = position;
         this.#_waiting = false;
@@ -31,8 +32,12 @@ class Player extends EventTarget {
         this.addEventListener('playerclick', (e) => {
             this.#_selected = !this.selected;
 
-            if (this.selected === true && this.available === true) {
-                this.setWaiting();
+            if (this.selected === true) {
+                if (this.available === true) {
+                    this.setWaiting();
+                } else {
+                    this.clearWaiting();
+                }
             } 
         });
 
@@ -41,8 +46,19 @@ class Player extends EventTarget {
         })
     };
     
+    get stats() {
+        return this.#_stats
+    }
+    
     get position() {
         return this.#_position;
+    }
+
+    get feetPosition() {
+        return {
+            x: this.#_position.x + (this.htmlImage.width /4 /2),
+            y: this.#_position.y + (this.htmlImage.height)
+        }
     }
 
     set position(p) {

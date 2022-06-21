@@ -27,6 +27,12 @@ canvas.user.right {
     position: sticky;
     left:1688;
 }
-.selected-player {
-    cursor:crosshair;
+#MovePointer {
+    z-index: 100;
+    height: 32px;
+    width: 32px;
+    background: yellow;
+    border-radius: 50%;
+    position: absolute;
+    display: none;
 }

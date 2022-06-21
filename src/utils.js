@@ -6,3 +6,8 @@ const loadImage = url => {
         img.onerror = () => reject(new Error(`warning: loading of image at ${url} has failed`));
     });
 };
+
+distance = function (start, end) {
+    let d = Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2));
+    return d;
+}
