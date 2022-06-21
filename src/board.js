@@ -19,8 +19,6 @@ class Board extends EventTarget {
         document.addEventListener('mozpointerlockchange', this.setMaximumMovement);
         this.movePointer;
 
-        //let updateMaxMove = updateMaximumMovement;
-
         const fieldImage = new Image();
         fieldImage.src = "img/map.png";  
         fieldImage.onload = () => {
@@ -38,6 +36,9 @@ class Board extends EventTarget {
             this.drawPlayer(e.detail.player, e.detail.player.position, 0);
         });
 
+        /**
+         * WARNING: pointer lock causes the next clicks to always be caught upon the same player.
+         */
         this.addEventListener('playerclick', (e) => {
             let clickedPlayer = e.detail.player;
 
@@ -47,8 +48,6 @@ class Board extends EventTarget {
             this.switchSelected(clickedPlayer)
             if (clickedPlayer.selected && clickedPlayer.selected === true) {
                 this.drawPlayerCard(leftUserCard, clickedPlayer);
-            } else {
-                // what happens here?
             }
 
             if (document.pointerLockElement === this.mouseCanvas) {
@@ -63,11 +62,19 @@ class Board extends EventTarget {
         context.clearRect(0, 0, canvas.width, canvas.height);
     }
 
+    /**
+     * Automatically deselect all players that are in "selected" state but the selected one.
+     * @param {Player} player - The selected player
+     */
     switchSelected = (player) => {
         let selectedPlayers = this.controller.filter(c => c.player.selected === true && c.player.name !== player.name);
         if (selectedPlayers && selectedPlayers.length > 0) {
             selectedPlayers.forEach(c => c.player.deselect());
         } 
+    }
+
+    deselectAll = () => {
+        this.controller.forEach(e => e.player.deselect());
     }
 
     drawTeam = arr => {
@@ -85,17 +92,14 @@ class Board extends EventTarget {
     }
 
     exitPointerLock = () => {
+        this.clearPointerLock();
         document.exitPointerLock();
-        console.log('removing eventListener');
         document.removeEventListener("mousemove", this.updateMaximumMovement, false);
+        this.deselectAll();
+        this.clearCanvas(this.leftUserContext, this.leftUserCanvas);
     }
     
     requestPointerLock = (clickedPlayer) => {
-        let ts = document.getElementById('TableSoccer');
-        if (!ts.classList.contains('selected-player')) {
-            ts.classList.add('selected-player');
-        }
-
         let start = clickedPlayer.feetPosition;
 
         this.mouseCanvas.requestPointerLock();
@@ -107,9 +111,14 @@ class Board extends EventTarget {
                 y: start.y
             }
         };
-        console.log(this.movePointer);
-        console.log('adding eventListener');
         document.addEventListener("mousemove", this.updateMaximumMovement, false);
+    }
+
+    clearPointerLock = () => {
+        let pointer = document.getElementById('MovePointer');
+        pointer.style.setProperty("display", "none");
+        pointer.style.left = "0px";
+        pointer.style.top = "0px";
     }
 
     updateMaximumMovement = (function (e) {

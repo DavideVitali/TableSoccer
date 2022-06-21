@@ -31,25 +31,24 @@ class Player extends EventTarget {
 
         this.addEventListener('playerclick', (e) => {
             this.#_selected = !this.selected;
+            console.log(`${this.name} is selected: ${this.#_selected}`);
 
             if (this.selected === true) {
                 if (this.available === true) {
                     this.setWaiting();
+                    console.log(`${this.name} is waiting`);
                 } else {
                     this.clearWaiting();
+                    console.log(`${this.name} is not waiting`);
                 }
             } 
         });
-
-        this.addEventListener('playercollision', (e) => {
-
-        })
     };
     
     get stats() {
         return this.#_stats
     }
-    
+
     get position() {
         return this.#_position;
     }
@@ -123,5 +122,6 @@ class Player extends EventTarget {
     deselect = () => {
         this.#_selected = false;
         this.#_waiting = false;
+        console.log(`${this.name} deselected and not waiting.`)
     }
 }
