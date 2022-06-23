@@ -19,9 +19,10 @@ mouseEventsCanvas.addEventListener('click', (e) => {
             }
         });
 
+        // order matters!!!
         player.dispatchEvent(playerClick);
         board.dispatchEvent(playerClick);
-
+        
         if (player.selected === true) {
             game.selectedPlayer = player;
         } else {

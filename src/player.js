@@ -30,18 +30,17 @@ class Player extends EventTarget {
         });
 
         this.addEventListener('playerclick', (e) => {
-            this.#_selected = !this.selected;
-            console.log(`${this.name} is selected: ${this.#_selected}`);
+            if (this.selected === true && this.available === true) {
+                this.clearWaiting();
+            }
 
-            if (this.selected === true) {
-                if (this.available === true) {
-                    this.setWaiting();
-                    console.log(`${this.name} is waiting`);
-                } else {
-                    this.clearWaiting();
-                    console.log(`${this.name} is not waiting`);
-                }
+            this.#_selected = !this.selected;
+
+            if (this.selected === true && this.available === false) {
+                this.setWaiting();
             } 
+
+            console.log(`${this.name} selected ${this.selected}, available ${this.available}, waiting ${this.waiting}`);
         });
     };
     
@@ -122,6 +121,6 @@ class Player extends EventTarget {
     deselect = () => {
         this.#_selected = false;
         this.#_waiting = false;
-        console.log(`${this.name} deselected and not waiting.`)
+        console.log(`[from deselect] ${this.name} selected ${this.selected}, available ${this.available}, waiting ${this.waiting}`)
     }
 }

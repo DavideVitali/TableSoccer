@@ -13,10 +13,10 @@ class Board extends EventTarget {
         this.rightUserContext = this.rightUserCanvas.getContext('2d');
 
         // pointerLock API setup
-        this.mouseCanvas.requestPointerLock = this.mouseCanvas.requestPointerLock || this.mouseCanvas.mozRequestPointerLock;
-        document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
-        document.addEventListener('pointerlockchange', this.setMaximumMovement);
-        document.addEventListener('mozpointerlockchange', this.setMaximumMovement);
+        // this.mouseCanvas.requestPointerLock = this.mouseCanvas.requestPointerLock || this.mouseCanvas.mozRequestPointerLock;
+        // document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
+        // document.addEventListener('pointerlockchange', this.setMaximumMovement);
+        // document.addEventListener('mozpointerlockchange', this.setMaximumMovement);
         this.movePointer;
 
         const fieldImage = new Image();
@@ -27,7 +27,7 @@ class Board extends EventTarget {
 
         this.controller = []
         for(let i = 0; i < 11; i++) {
-            // la formazione va trasformata in posizione effettiva
+            // formation has to be transformed in actual position relative to screen size
             team.elements[i].position = this.formationToBoardCoordinates(team.elements[i].position);
             this.controller.push(new Controller(team.elements[i].player, team.elements[i].position));
         }
@@ -40,21 +40,25 @@ class Board extends EventTarget {
          * WARNING: pointer lock causes the next clicks to always be caught upon the same player.
          */
         this.addEventListener('playerclick', (e) => {
+            console.log('board event');
             let clickedPlayer = e.detail.player;
+            this.switchSelected(clickedPlayer)
 
             this.clearCanvas(this.mouseContext, this.mouseCanvas);
             this.clearCanvas(this.leftUserContext, this.leftUserCanvas);
             this.drawMoveCursors();
-            this.switchSelected(clickedPlayer)
-            if (clickedPlayer.selected && clickedPlayer.selected === true) {
-                this.drawPlayerCard(leftUserCard, clickedPlayer);
+            this.drawPlayerCard(leftUserCard, clickedPlayer);
+            
+            if (clickedPlayer.selected) {
+                if (clickedPlayer.waiting) { }
+
             }
 
-            if (document.pointerLockElement === this.mouseCanvas) {
-                this.exitPointerLock();
-            } else {
-                this.requestPointerLock(clickedPlayer);
-            }
+            // if (document.pointerLockElement === this.mouseCanvas) {
+            //     this.exitPointerLock();
+            // } else {
+            //     this.requestPointerLock(clickedPlayer);
+            // }
         });
     }
 
@@ -63,14 +67,11 @@ class Board extends EventTarget {
     }
 
     /**
-     * Automatically deselect all players that are in "selected" state but the selected one.
+     * Automatically deselect all players that are in "selected" state except for the selected one.
      * @param {Player} player - The selected player
      */
     switchSelected = (player) => {
-        let selectedPlayers = this.controller.filter(c => c.player.selected === true && c.player.name !== player.name);
-        if (selectedPlayers && selectedPlayers.length > 0) {
-            selectedPlayers.forEach(c => c.player.deselect());
-        } 
+        this.controller.filter(c => c.player.selected === true && c.player.name !== player.name)?.forEach(c => c.player.deselect());
     }
 
     deselectAll = () => {
@@ -91,18 +92,17 @@ class Board extends EventTarget {
         ctx.fillText(player.name, ((card.template.width - nameWidth) / 2) + card.position.x, (202 + card.position.y));
     }
 
-    exitPointerLock = () => {
-        this.clearPointerLock();
-        document.exitPointerLock();
+
+    hideMaximumMovement = () => {
         document.removeEventListener("mousemove", this.updateMaximumMovement, false);
         this.deselectAll();
         this.clearCanvas(this.leftUserContext, this.leftUserCanvas);
     }
     
-    requestPointerLock = (clickedPlayer) => {
+    showMaximumMovement = (clickedPlayer) => {
         let start = clickedPlayer.feetPosition;
 
-        this.mouseCanvas.requestPointerLock();
+        // init
         this.movePointer = {
             start: start,
             radius: clickedPlayer.stats.speed,
@@ -114,35 +114,14 @@ class Board extends EventTarget {
         document.addEventListener("mousemove", this.updateMaximumMovement, false);
     }
 
-    clearPointerLock = () => {
-        let pointer = document.getElementById('MovePointer');
-        pointer.style.setProperty("display", "none");
-        pointer.style.left = "0px";
-        pointer.style.top = "0px";
-    }
-
     updateMaximumMovement = (function (e) {
         let start = this.movePointer.start;
         let current = this.movePointer.current;
         let maxRadius = this.movePointer.radius;
         
-        let nextPoint = {
-            x: current.x + e.movementX,
-            y: current.y + e.movementY
-        };
-        let dist = distance(nextPoint, start);
-        
-        if (dist < maxRadius) {
-            this.movePointer.current.x = nextPoint.x;
-            this.movePointer.current.y = nextPoint.y;
-        }
+        let table = document.getElementById('TableSoccer');
+        //if (table.classList.contains)
 
-        let absX = this.movePointer.current.x + this.mouseCanvas.offsetLeft
-        let absY = this.movePointer.current.y + this.mouseCanvas.offsetTop
-        let pointer = document.getElementById('MovePointer');
-        pointer.style.setProperty("display", "block");
-        pointer.style.left = `${absX - 16}px`;
-        pointer.style.top = `${absY - 16}px`;
     }).bind(this)
 
     findWaitingPlayer = () => {
@@ -243,7 +222,7 @@ class Board extends EventTarget {
 
     setMaximumMovement = () => {
         if (document.pointerLockElement !== this.mouseCanvas) {
-            this.exitPointerLock();
+            this.hideMaximumMovement();
         }       
     }
 
