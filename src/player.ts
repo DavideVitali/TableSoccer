@@ -1,22 +1,32 @@
+import { url } from "inspector";
+import { Url } from "url";
+
 type Point = { x: number, y: number };
 
 class Player extends EventTarget {
-    private waiting;
-    private moving;
-    private moveDone;
-    private selected;
+    private _waiting: boolean;
+    private _moving: boolean;
+    private _moveDone: boolean | null;
+    private _selected: boolean;
     private _position: Point;
+    private _stats: any;
+    public name: string;
+    private _imageUrl: string;
+    private _isLoaded: boolean;
+    public loadImage: Promise<unknown>
 
-    constructor(imageUrl, portraitUrl, name, position, stats) {
+    constructor(imageUrl: string, name: string, position: Point, stats: any) {
         super();
-        this.imageUrl = imageUrl;
+        this._imageUrl = imageUrl;
         this.name = name;
-        this.isLoaded = false;
+        this._isLoaded = false;
         this.loadImage = loadImage(imageUrl);
-        this.stats = stats;
-        this.selected = false;
+        this._stats = stats;
         this._position = position;
-        this.waiting = false;
+        this._selected = false;
+        this._waiting = false;
+        this._moving = false;
+        this._moveDone = null;
 
         this.addEventListener('playermoved', (e) => {
             this.clearWaiting();
@@ -31,9 +41,9 @@ class Player extends EventTarget {
         });
 
         this.addEventListener('playerclick', (e) => {
-            this.selected = !this.selected;
+            this._selected = !this._selected;
 
-            if (this.selected === true && this.available === true) {
+            if (this._selected === true && this.available === true) {
                 this.setWaiting();
             } 
         });
@@ -52,43 +62,43 @@ class Player extends EventTarget {
     }
 
     get available() {
-        return this.moving !== true && this.moveDone !== true && this.waiting !== true;
+        return this._moving !== true && this._moveDone !== true && this._waiting !== true;
     }
 
     get waiting() {
-        return this.waiting;
+        return this._waiting;
     }
 
     setWaiting = () => {
-        this.waiting = true;
+        this._waiting = true;
     }
 
     clearWaiting = () => {
-        this.waiting = false;
+        this._waiting = false;
     }
 
     get moving() {
-        return this.moving === true;
+        return this._moving === true;
     }
 
     setMoving = () => {
-        this.moving = true;
+        this._moving = true;
     }
 
     clearMoving = () => {
-        this.moving = null;
+        this._moving = false;
     }
 
     get moveDone() {
-        return this.moveDone === true;
+        return this._moveDone === true;
     }
 
     setMoveDone = () => {
-        this.moveDone = true;
+        this._moveDone = true;
     }
 
     clearMoveDone = () => {
-        this.moveDone = null;
+        this._moveDone = null;
     }   
 
     resetStatus = () => {
@@ -98,16 +108,25 @@ class Player extends EventTarget {
     }
 
     get selected() {
-        return this.selected
+        return this._selected
     }
 
     select = () => {
-        this.selected = true;
+        this._selected = true;
     }
 
     /* This is loop-called from board when selecting another player */
     deselect = () => {
-        this.selected = false;
-        this.waiting = false;
+        this._selected = false;
+        this._waiting = false;
     }
 }
+
+const loadImage = (url: string) => {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = url;
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error(`warning: loading of image at ${url} has failed.`));
+    });
+};
