@@ -58,7 +58,7 @@ let promises = team.elements.map(element => element.player.loadImage);
 promises.push(leftUserCard);
 
 Promise.all(promises)
-.then(done => {
+.then(() => {
     board.drawTeam(team);
     board.drawMoveCursors();
 });
