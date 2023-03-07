@@ -1,6 +1,3 @@
-import { url } from "inspector";
-import { Url } from "url";
-
 type Point = { x: number, y: number };
 
 class Player extends EventTarget {
