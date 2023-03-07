@@ -10,7 +10,7 @@ class Player extends EventTarget {
     public name: string;
     private _imageUrl: string;
     private _isLoaded: boolean;
-    public loadImage: Promise<unknown>
+    public loadImage: Promise<HTMLImageElement>
 
     constructor(imageUrl: string, name: string, position: Point, stats: any) {
         super();
@@ -120,7 +120,7 @@ class Player extends EventTarget {
 }
 
 const loadImage = (url: string) => {
-    return new Promise((resolve, reject) => {
+    return new Promise<HTMLImageElement>((resolve, reject) => {
         const img = new Image();
         img.src = url;
         img.onload = () => resolve(img);
