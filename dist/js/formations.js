@@ -1,89 +1,97 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Formation = void 0;
+const types_1 = require("./types");
 class Formation {
     constructor(module, type) {
         this.positions = [];
-
         switch (module) {
             case '443':
-                if (type === 'offense') {
-                    this.positions.push({x: 5, y: 50});
-                    this.positions.push({x: 17, y: 20});
-                    this.positions.push({x: 17, y: 40});
-                    this.positions.push({x: 17, y: 60});
-                    this.positions.push({x: 17, y: 80});
-                    this.positions.push({x: 32, y: 30});
-                    this.positions.push({x: 32, y: 50});
-                    this.positions.push({x: 32, y: 70});
-                    this.positions.push({x: 50, y: 47});
-                    this.positions.push({x: 41, y: 50});
-                    this.positions.push({x: 49, y: 52});    
-                } else {
-                    this.positions.push({x: 95, y: 50});
-                    this.positions.push({x: 83, y: 20});
-                    this.positions.push({x: 83, y: 40});
-                    this.positions.push({x: 83, y: 60});
-                    this.positions.push({x: 83, y: 80});
-                    this.positions.push({x: 68, y: 30});
-                    this.positions.push({x: 68, y: 50});
-                    this.positions.push({x: 68, y: 70});
-                    this.positions.push({x: 53, y: 35});
-                    this.positions.push({x: 59, y: 50});
-                    this.positions.push({x: 53, y: 65});     
+                if (type === types_1.FormationType.OFFENSE) {
+                    this.positions.push({ x: 5, y: 50 });
+                    this.positions.push({ x: 17, y: 20 });
+                    this.positions.push({ x: 17, y: 40 });
+                    this.positions.push({ x: 17, y: 60 });
+                    this.positions.push({ x: 17, y: 80 });
+                    this.positions.push({ x: 32, y: 30 });
+                    this.positions.push({ x: 32, y: 50 });
+                    this.positions.push({ x: 32, y: 70 });
+                    this.positions.push({ x: 50, y: 47 });
+                    this.positions.push({ x: 41, y: 50 });
+                    this.positions.push({ x: 49, y: 52 });
                 }
-            break;
+                else {
+                    this.positions.push({ x: 95, y: 50 });
+                    this.positions.push({ x: 83, y: 20 });
+                    this.positions.push({ x: 83, y: 40 });
+                    this.positions.push({ x: 83, y: 60 });
+                    this.positions.push({ x: 83, y: 80 });
+                    this.positions.push({ x: 68, y: 30 });
+                    this.positions.push({ x: 68, y: 50 });
+                    this.positions.push({ x: 68, y: 70 });
+                    this.positions.push({ x: 53, y: 35 });
+                    this.positions.push({ x: 59, y: 50 });
+                    this.positions.push({ x: 53, y: 65 });
+                }
+                break;
             case '343':
-                if (type === 'offense') {
-                    this.positions.push({x: 5, y: 50});
-                    this.positions.push({x: 17, y: 30});
-                    this.positions.push({x: 17, y: 50});
-                    this.positions.push({x: 17, y: 70});
-                    this.positions.push({x: 32, y: 20});
-                    this.positions.push({x: 32, y: 40});
-                    this.positions.push({x: 32, y: 60});
-                    this.positions.push({x: 32, y: 80});
-                    this.positions.push({x: 50, y: 47});
-                    this.positions.push({x: 41, y: 50});
-                    this.positions.push({x: 49, y: 52});   
-                } else {
-                    this.positions.push({x: 95, y: 50});
-                    this.positions.push({x: 83, y: 30});
-                    this.positions.push({x: 83, y: 50});
-                    this.positions.push({x: 83, y: 70});
-                    this.positions.push({x: 68, y: 20});
-                    this.positions.push({x: 68, y: 40});
-                    this.positions.push({x: 68, y: 60});
-                    this.positions.push({x: 68, y: 80});
-                    this.positions.push({x: 53, y: 35});
-                    this.positions.push({x: 59, y: 50});
-                    this.positions.push({x: 53, y: 65});  
+                if (type === types_1.FormationType.OFFENSE) {
+                    this.positions.push({ x: 5, y: 50 });
+                    this.positions.push({ x: 17, y: 30 });
+                    this.positions.push({ x: 17, y: 50 });
+                    this.positions.push({ x: 17, y: 70 });
+                    this.positions.push({ x: 32, y: 20 });
+                    this.positions.push({ x: 32, y: 40 });
+                    this.positions.push({ x: 32, y: 60 });
+                    this.positions.push({ x: 32, y: 80 });
+                    this.positions.push({ x: 50, y: 47 });
+                    this.positions.push({ x: 41, y: 50 });
+                    this.positions.push({ x: 49, y: 52 });
+                }
+                else {
+                    this.positions.push({ x: 95, y: 50 });
+                    this.positions.push({ x: 83, y: 30 });
+                    this.positions.push({ x: 83, y: 50 });
+                    this.positions.push({ x: 83, y: 70 });
+                    this.positions.push({ x: 68, y: 20 });
+                    this.positions.push({ x: 68, y: 40 });
+                    this.positions.push({ x: 68, y: 60 });
+                    this.positions.push({ x: 68, y: 80 });
+                    this.positions.push({ x: 53, y: 35 });
+                    this.positions.push({ x: 59, y: 50 });
+                    this.positions.push({ x: 53, y: 65 });
                 }
             case '442':
             default:
-                if (type === 'offense') {
-                    this.positions.push({x: 5, y: 50});
-                    this.positions.push({x: 17, y: 20});
-                    this.positions.push({x: 17, y: 40});
-                    this.positions.push({x: 17, y: 60});
-                    this.positions.push({x: 17, y: 80});
-                    this.positions.push({x: 37, y: 25});
-                    this.positions.push({x: 32, y: 40});
-                    this.positions.push({x: 32, y: 60});
-                    this.positions.push({x: 37, y: 75});
-                    this.positions.push({x: 50, y: 47});
-                    this.positions.push({x: 49, y: 52});    
-                } else {
-                    this.positions.push({x: 95, y: 50});
-                    this.positions.push({x: 83, y: 20});
-                    this.positions.push({x: 83, y: 40});
-                    this.positions.push({x: 83, y: 60});
-                    this.positions.push({x: 83, y: 80});
-                    this.positions.push({x: 68, y: 20});
-                    this.positions.push({x: 68, y: 40});
-                    this.positions.push({x: 68, y: 60});
-                    this.positions.push({x: 68, y: 80});
-                    this.positions.push({x: 55, y: 35});
-                    this.positions.push({x: 55, y: 65});
+                if (type === types_1.FormationType.OFFENSE) {
+                    this.positions.push({ x: 5, y: 50 });
+                    this.positions.push({ x: 17, y: 20 });
+                    this.positions.push({ x: 17, y: 40 });
+                    this.positions.push({ x: 17, y: 60 });
+                    this.positions.push({ x: 17, y: 80 });
+                    this.positions.push({ x: 37, y: 25 });
+                    this.positions.push({ x: 32, y: 40 });
+                    this.positions.push({ x: 32, y: 60 });
+                    this.positions.push({ x: 37, y: 75 });
+                    this.positions.push({ x: 50, y: 47 });
+                    this.positions.push({ x: 49, y: 52 });
                 }
-            break;
+                else {
+                    this.positions.push({ x: 95, y: 50 });
+                    this.positions.push({ x: 83, y: 20 });
+                    this.positions.push({ x: 83, y: 40 });
+                    this.positions.push({ x: 83, y: 60 });
+                    this.positions.push({ x: 83, y: 80 });
+                    this.positions.push({ x: 68, y: 20 });
+                    this.positions.push({ x: 68, y: 40 });
+                    this.positions.push({ x: 68, y: 60 });
+                    this.positions.push({ x: 68, y: 80 });
+                    this.positions.push({ x: 55, y: 35 });
+                    this.positions.push({ x: 55, y: 65 });
+                }
+                break;
         }
     }
-} 
+}
+exports.Formation = Formation;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZm9ybWF0aW9ucy5qcyIsInNvdXJjZVJvb3QiOiIuL3NyYy8iLCJzb3VyY2VzIjpbImZvcm1hdGlvbnMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7O0FBQUEsbUNBQThDO0FBRTlDLE1BQWEsU0FBUztJQUVsQixZQUFZLE1BQWMsRUFBRSxJQUFtQjtRQUMzQyxJQUFJLENBQUMsU0FBUyxHQUFHLEVBQUUsQ0FBQztRQUVwQixRQUFRLE1BQU0sRUFBRTtZQUNaLEtBQUssS0FBSztnQkFDTixJQUFJLElBQUksS0FBSyxxQkFBYSxDQUFDLE9BQU8sRUFBRTtvQkFDaEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsQ0FBQyxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNuQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7aUJBQ3ZDO3FCQUFNO29CQUNILElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO2lCQUN2QztnQkFDTCxNQUFNO1lBQ04sS0FBSyxLQUFLO2dCQUNOLElBQUksSUFBSSxLQUFLLHFCQUFhLENBQUMsT0FBTyxFQUFFO29CQUNoQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxDQUFDLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ25DLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztpQkFDdkM7cUJBQU07b0JBQ0gsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7aUJBQ3ZDO1lBQ0wsS0FBSyxLQUFLLENBQUM7WUFDWDtnQkFDSSxJQUFJLElBQUksS0FBSyxxQkFBYSxDQUFDLE9BQU8sRUFBRTtvQkFDaEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsQ0FBQyxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNuQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7aUJBQ3ZDO3FCQUFNO29CQUNILElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO29CQUNwQyxJQUFJLENBQUMsU0FBUyxDQUFDLElBQUksQ0FBQyxFQUFDLENBQUMsRUFBRSxFQUFFLEVBQUUsQ0FBQyxFQUFFLEVBQUUsRUFBQyxDQUFDLENBQUM7b0JBQ3BDLElBQUksQ0FBQyxTQUFTLENBQUMsSUFBSSxDQUFDLEVBQUMsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLEVBQUUsRUFBRSxFQUFDLENBQUMsQ0FBQztvQkFDcEMsSUFBSSxDQUFDLFNBQVMsQ0FBQyxJQUFJLENBQUMsRUFBQyxDQUFDLEVBQUUsRUFBRSxFQUFFLENBQUMsRUFBRSxFQUFFLEVBQUMsQ0FBQyxDQUFDO2lCQUN2QztnQkFDTCxNQUFNO1NBQ1Q7SUFDTCxDQUFDO0NBQ0o7QUF6RkQsOEJBeUZDIn0=

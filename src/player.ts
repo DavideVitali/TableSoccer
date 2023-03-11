@@ -1,9 +1,6 @@
-import { url } from "inspector";
-import { Url } from "url";
+import { Point } from './types';
 
-type Point = { x: number, y: number };
-
-class Player extends EventTarget {
+export class Player extends EventTarget {
     private _waiting: boolean;
     private _moving: boolean;
     private _moveDone: boolean | null;
@@ -13,14 +10,14 @@ class Player extends EventTarget {
     public name: string;
     private _imageUrl: string;
     private _isLoaded: boolean;
-    public loadImage: Promise<unknown>
+    public loadImage: Promise<HTMLImageElement>
 
     constructor(imageUrl: string, name: string, position: Point, stats: any) {
         super();
         this._imageUrl = imageUrl;
         this.name = name;
         this._isLoaded = false;
-        this.loadImage = loadImage(imageUrl);
+        this.loadImage = Utils.loadImage(imageUrl);
         this._stats = stats;
         this._position = position;
         this._selected = false;
@@ -121,12 +118,3 @@ class Player extends EventTarget {
         this._waiting = false;
     }
 }
-
-const loadImage = (url: string) => {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.src = url;
-        img.onload = () => resolve(img);
-        img.onerror = () => reject(new Error(`warning: loading of image at ${url} has failed.`));
-    });
-};
