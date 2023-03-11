@@ -117,4 +117,17 @@ export class Player extends EventTarget {
         this._selected = false;
         this._waiting = false;
     }
+<<<<<<< HEAD
 }
+=======
+}
+
+const loadImage = (url: string) => {
+    return new Promise<HTMLImageElement>((resolve, reject) => {
+        const img = new Image();
+        img.src = url;
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error(`warning: loading of image at ${url} has failed.`));
+    });
+};
+>>>>>>> f12175d707d19e7de6bc9994da926b54743e8abc
