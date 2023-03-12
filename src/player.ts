@@ -10,7 +10,8 @@ export class Player extends EventTarget {
     public name: string;
     private _imageUrl: string;
     private _isLoaded: boolean;
-    public loadImage: Promise<HTMLImageElement>
+    public loadImage: Promise<HTMLImageElement>;
+    private _htmlImage: HTMLImageElement | any;
 
     constructor(imageUrl: string, name: string, position: Point, stats: any) {
         super();
@@ -24,6 +25,7 @@ export class Player extends EventTarget {
         this._waiting = false;
         this._moving = false;
         this._moveDone = null;
+        this._htmlImage = null;
 
         this.addEventListener('playermoved', (e) => {
             this.clearWaiting();
@@ -50,84 +52,79 @@ export class Player extends EventTarget {
         })
     };
     
-    get position() {
+    public get position() {
         return this._position;
     }
 
-    set position(p) {
+    public set position(p) {
         this._position = p;
     }
 
-    get available() {
+    public get available() {
         return this._moving !== true && this._moveDone !== true && this._waiting !== true;
     }
 
-    get waiting() {
+    public get waiting() {
         return this._waiting;
     }
 
-    setWaiting = () => {
+    public setWaiting = () => {
         this._waiting = true;
     }
 
-    clearWaiting = () => {
+    public clearWaiting = () => {
         this._waiting = false;
     }
 
-    get moving() {
+    public get moving() {
         return this._moving === true;
     }
 
-    setMoving = () => {
+    public setMoving = () => {
         this._moving = true;
     }
 
-    clearMoving = () => {
+    public clearMoving = () => {
         this._moving = false;
     }
 
-    get moveDone() {
+    public get moveDone() {
         return this._moveDone === true;
     }
 
-    setMoveDone = () => {
+    public setMoveDone = () => {
         this._moveDone = true;
     }
 
-    clearMoveDone = () => {
+    public clearMoveDone = () => {
         this._moveDone = null;
     }   
 
-    resetStatus = () => {
+    public resetStatus = () => {
         this.clearWaiting();
         this.clearMoving();
         this.clearMoveDone();
     }
 
-    get selected() {
+    public get selected() {
         return this._selected
     }
 
-    select = () => {
+    public select = () => {
         this._selected = true;
     }
 
     /* This is loop-called from board when selecting another player */
-    deselect = () => {
+    public deselect = () => {
         this._selected = false;
         this._waiting = false;
     }
-<<<<<<< HEAD
-}
-=======
-}
 
-const loadImage = (url: string) => {
-    return new Promise<HTMLImageElement>((resolve, reject) => {
-        const img = new Image();
-        img.src = url;
-        img.onload = () => resolve(img);
-        img.onerror = () => reject(new Error(`warning: loading of image at ${url} has failed.`));
-    });
-};
->>>>>>> f12175d707d19e7de6bc9994da926b54743e8abc
+    public get htmlImage() {
+        if (this._htmlImage !== null) {
+            return this._htmlImage as HTMLImageElement;
+        } else {
+            return this._htmlImage;
+        }
+    }
+}

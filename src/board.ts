@@ -1,22 +1,38 @@
-class Board extends EventTarget {
-    constructor(team) {
+import { Team } from "./team";
+import { Point } from "./types";
+
+export class Board extends EventTarget {
+    fieldCanvas: HTMLCanvasElement;
+    fieldContext: CanvasRenderingContext2D;
+    mouseCanvas: HTMLCanvasElement;
+    mouseContext: CanvasRenderingContext2D;
+    playersCanvas: HTMLCanvasElement;
+    playersContext: CanvasRenderingContext2D;
+    leftUserCanvas: HTMLCanvasElement;
+    leftUserContext: CanvasRenderingContext2D;
+    rightUserCanvas: HTMLCanvasElement;
+    rightUserContext: CanvasRenderingContext2D;
+    pointerLockStartPoint: Point | null;
+    controllers: Controller[];
+    
+    constructor(team: Team) {
         super();
-        this.fieldCanvas = document.getElementById('Field');
-        this.fieldContext = this.fieldCanvas.getContext('2d');
-        this.mouseCanvas = document.getElementById('MouseEvents');
-        this.mouseContext = this.mouseCanvas.getContext('2d');
-        this.playersCanvas = document.getElementById('Players');
-        this.playersContext = this.playersCanvas.getContext('2d');
-        this.leftUserCanvas = document.getElementById('LeftUser');
-        this.leftUserContext = this.leftUserCanvas.getContext('2d')
-        this.rightUserCanvas = document.getElementById('RightUser');
-        this.rightUserContext = this.rightUserCanvas.getContext('2d');
+        this.fieldCanvas = document.getElementById('Field')! as HTMLCanvasElement;
+        this.fieldContext = this.fieldCanvas.getContext('2d')!;
+        this.mouseCanvas = document.getElementById('MouseEvents')! as HTMLCanvasElement;
+        this.mouseContext = this.mouseCanvas.getContext('2d')!;
+        this.playersCanvas = document.getElementById('Players')! as HTMLCanvasElement;
+        this.playersContext = this.playersCanvas.getContext('2d')!;
+        this.leftUserCanvas = document.getElementById('LeftUser')! as HTMLCanvasElement;
+        this.leftUserContext = this.leftUserCanvas.getContext('2d')!;
+        this.rightUserCanvas = document.getElementById('RightUser')! as HTMLCanvasElement;
+        this.rightUserContext = this.rightUserCanvas.getContext('2d')!;
+        this.pointerLockStartPoint = null;
 
         // pointerLock API setup
-        this.mouseCanvas.requestPointerLock = this.mouseCanvas.requestPointerLock || this.mouseCanvas.mozRequestPointerLock;
-        document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
+        this.mouseCanvas.requestPointerLock = this.mouseCanvas.requestPointerLock;
+        document.exitPointerLock = document.exitPointerLock;
         document.addEventListener('pointerlockchange', this.setMaximumMovement);
-        document.addEventListener('mozpointerlockchange', this.setMaximumMovement);
         this.pointerLockStartPoint;
 
         const fieldImage = new Image();
@@ -25,11 +41,11 @@ class Board extends EventTarget {
             this.fieldContext.drawImage(fieldImage, 0, 0);
         }
 
-        this.controller = []
+        this.controllers = []
         for(let i = 0; i < 11; i++) {
             // la formazione va trasformata in posizione effettiva
             team.elements[i].position = this.formationToBoardCoordinates(team.elements[i].position);
-            this.controller.push(new Controller(team.elements[i].player, team.elements[i].position));
+            this.controllers.push(new Controller(team.elements[i].player, team.elements[i].position));
         }
         
         this.addEventListener('playercollision', (e) => {

@@ -1,9 +1,4 @@
-// window.addEventListener('mousemove', (e) => {
-
-
-// });
-
-let mouseEventsCanvas = document.getElementById('MouseEvents');
+let mouseEventsCanvas = document.getElementById('MouseEvents')! as HTMLCanvasElement;
 
 mouseEventsCanvas.addEventListener('click', (e) => {
     let coords = { x: e.pageX - board.leftUserCanvas.width, y: e.pageY };
