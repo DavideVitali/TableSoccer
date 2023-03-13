@@ -126,7 +126,7 @@ export class Board extends EventTarget
         }
 
         if (result.length > 1) {
-            throw new Error(`There are too many players are in 'waiting' state`);
+            throw new Error(`There are too many players in 'waiting' state`);
         }
 
         return result[0];
