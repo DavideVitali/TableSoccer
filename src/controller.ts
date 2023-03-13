@@ -71,12 +71,6 @@ export class Controller extends EventTarget {
 
       this.animationStartTimestamp = Date.now();
 
-      // board.clearPlayerRect(
-      //   this.player,
-      //   this.player.position,
-      //   this.player.htmlImage.width / 4,
-      //   this.player.htmlImage.height
-      // );
       let requestedPlayerRectClear = new PlayerEvent("requestedplayerrectclear", this.player)
       this.player.dispatchEvent(requestedPlayerRectClear);
 

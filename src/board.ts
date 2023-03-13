@@ -65,8 +65,20 @@ export class Board extends EventTarget {
       );
     }
 
+    this.addEventListener("requestedplayerrectclear", (e) => {
+      let pEvent = e as PlayerEvent;
+
+      this.clearPlayerRect(
+        pEvent.player,
+        pEvent.player.position,
+        pEvent.player.htmlImage.width / 4,
+        pEvent.player.htmlImage.height
+      );
+    });
+
     this.addEventListener("playermoved", (e) => {
         let pEvent = e as PlayerEvent;
+        this.drawPlayer(pEvent.player, pEvent.movement);
     });
 
     this.addEventListener("playercollision", (e) => {
@@ -120,7 +132,7 @@ export class Board extends EventTarget {
 
   public drawTeam(teamElements: TeamElement[]) {
     teamElements.forEach((e) => {
-      this.drawPlayer(e.player, e.position, 0);
+      this.drawPlayer(e.player, 0);
     });
   }
 
@@ -287,7 +299,7 @@ export class Board extends EventTarget {
         let eB = eT + height;
 
         if (cL < eR && cR > eL && cT < eB && cB > eT) {
-          this.drawPlayer(e.player, e.player.position, 0);
+          this.drawPlayer(e.player, 0);
           let playerCollision = new PlayerEvent("playercollision", e.player);
           e.player.dispatchEvent(playerCollision);
         }
