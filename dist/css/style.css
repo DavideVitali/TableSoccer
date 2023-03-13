@@ -1,0 +1,32 @@
+@font-face {
+    font-family: fff;
+    src: url(../font/fff-forward.regular.ttf);
+}
+
+body {
+    font-family: fff;
+    margin: 0;
+    background-color: white;
+}
+#TableSoccer {
+    position: relative;
+}
+#TableSoccer > canvas {
+    position: absolute;
+    top:0;
+}
+canvas.board {
+    left:200;
+}
+canvas.user.left {
+    position: fixed;
+    left: 0px;
+    left: 0px;
+}
+canvas.user.right {
+    position: sticky;
+    left:1688;
+}
+.selected-player {
+    cursor:crosshair;
+}

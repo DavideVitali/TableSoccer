@@ -1,0 +1,27 @@
+{
+  "type": "module",
+  "name": "tablesoccer",
+  "version": "1.0.0",
+  "description": "Turn-based soccer game",
+  "main": "index.js",
+  "dependencies": {
+    "typescript": "^4.9.5"
+  },
+  "devDependencies": {
+    "lite-server": "^2.6.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "lite-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DavideVitali/TableSoccer.git"
+  },
+  "author": "Davide Vitali",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DavideVitali/TableSoccer/issues"
+  },
+  "homepage": "https://github.com/DavideVitali/TableSoccer#readme"
+}
