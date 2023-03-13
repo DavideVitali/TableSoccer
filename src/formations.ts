@@ -1,4 +1,4 @@
-import { FormationType, Point } from './types'
+import { FormationType, Point } from './types.js'
 
 export class FormationPosition {
     positions: Point[];

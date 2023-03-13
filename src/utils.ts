@@ -1,4 +1,4 @@
-class Utils {
+export class Utils {
     static loadImage(url: string) {
         return new Promise<HTMLImageElement>((resolve, reject) => {
             const img = new Image();

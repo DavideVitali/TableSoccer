@@ -1,7 +1,13 @@
-import { Team } from "./team";
-import { Point } from "./types";
+import { Card } from "./card.js";
+import { Controller } from "./controller.js";
+import { PlayerEvent } from "./events.js";
+import { Player } from "./player.js";
+import { Team, TeamElement } from "./team.js";
+import { Point } from "./types.js";
+declare const leftUserCard: Card;
 
-export class Board extends EventTarget {
+export class Board extends EventTarget 
+{
     fieldCanvas: HTMLCanvasElement;
     fieldContext: CanvasRenderingContext2D;
     mouseCanvas: HTMLCanvasElement;
@@ -49,11 +55,13 @@ export class Board extends EventTarget {
         }
         
         this.addEventListener('playercollision', (e) => {
-            this.drawPlayer(e.detail.player, e.detail.player.position, 0);
+            let pEvent = e as PlayerEvent;
+            this.drawPlayer(pEvent.player, pEvent.player.position, 0);
         });
 
         this.addEventListener('playerclick', (e) => {
-            let clickedPlayer = e.detail.player;
+            let pEvent = e as PlayerEvent;
+            let clickedPlayer = pEvent.player;
 
             this.clearCanvas(this.mouseContext, this.mouseCanvas);
             this.clearCanvas(this.leftUserContext, this.leftUserCanvas);
@@ -75,35 +83,39 @@ export class Board extends EventTarget {
         });
     }
 
-    clearCanvas = (context, canvas) => {
+    public clearCanvas (context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
         context.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    switchSelected = (player) => {
-        let selectedPlayers = this.controller.filter(c => c.player.selected === true && c.player.name !== player.name);
+    public switchSelected(player: Player) {
+        let selectedPlayers = this.controllers.filter(c => c.player.selected === true && c.player.name !== player.name);
         if (selectedPlayers && selectedPlayers.length > 0) {
             selectedPlayers.forEach(c => c.player.deselect());
         } 
     }
 
-    drawTeam = arr => {
-        arr.elements.forEach(e => {
+    public drawTeam(teamElements: TeamElement[]) {
+        teamElements.forEach(e => {
             this.drawPlayer(e.player, e.position, 0);
         });
     }
 
-    drawPlayerCard = (card, player) => {
+    public drawPlayerCard(card: Card, player: Player) {
         let ctx = this.leftUserContext;
         ctx.font = "12px fff";
-        ctx.drawImage(card.template, card.position.x, card.position.y);
+        if (card.template) {
+            ctx.drawImage(card.template, card.position.x, card.position.y);
+        } else {
+            throw new Error('Card template not loaded!');
+        }
         const nameWidth = ctx.measureText(player.name).width;
         ctx.fillText(player.name, ((card.template.width - nameWidth) / 2) + card.position.x, (202 + card.position.y));
     }
 
-    findWaitingPlayer = () => {
+    public findWaitingPlayer() {
         let result = [];
 
-        result = this.controller.map(element => {
+        result = this.controllers.map(element => {
             if (element.player.waiting === true) {
                 result.push(element.player);
             }
@@ -120,25 +132,25 @@ export class Board extends EventTarget {
         return result[0];
     }
 
-    formationToBoardCoordinates = (position) => {
+    public formationToBoardCoordinates(position: Point) {
         return { 
             x: Math.round(position.x * this.playersCanvas.width / 100),
             y: Math.round(position.y * this.playersCanvas.height / 100)
         };
     }
 
-    boardCoordinatesToFormation = (position) => {
+    public boardCoordinatesToFormation(position: Point) {
         return {
             x: Math.round(this.playersCanvas.width * 100 / position.x),
             y:Math.round(this.playersCanvas.height * 100 / position.y)
         };
     }
 
-    clearPlayerRect = ({player, position, dimension}) => {
-        this.playersContext.clearRect(position.x, position.y, dimension.width, dimension.height);
+    public clearPlayerRect(player: Player, position: Point, width: number, height: number) {
+        this.playersContext.clearRect(position.x, position.y, width, height);
     }
 
-    drawPlayer = (player, position, currentStep) => {
+    public drawPlayer(player: Player, position: Point, currentStep: number) {
         const current = {
             image: player.htmlImage,
             position: position
@@ -155,10 +167,10 @@ export class Board extends EventTarget {
     }
         
     // disegna il triangolino che segnala la disponibilità a fare un movimento
-    drawMoveCursors = () => {
+    public drawMoveCursors() {
         let ctx = this.mouseContext;
         ctx.clearRect(0, 0, this.mouseCanvas.width, this.mouseCanvas.height); 
-        this.controller.map(e => {
+        this.controllers.map(e => {
             if (e.player.moving !== true && e.player.moveDone !== true) {
                 let startpoint = { 
                     x: e.player.position.x + e.player.htmlImage.width / 4 / 2,
@@ -178,7 +190,7 @@ export class Board extends EventTarget {
     }
 
     // disegna il cerchio di massimo movimento di un giocatore
-    drawMaximumMovement = (player) => {
+    public drawMaximumMovement(player: Player) {
         let r = 5;
         let center = { 
             x: player.position.x + player.htmlImage.width / 4 / 2,
@@ -191,19 +203,18 @@ export class Board extends EventTarget {
         ctx.fill();
     }
 
-    clearMaximumMovement = () => {
-
+    public clearMaximumMovement() {
     }
 
-    setMaximumMovement = () => {
+    public setMaximumMovement() {
         if (document.pointerLockElement === this.mouseCanvas) {
             console.log('pointer locked');
         } else {
             console.log('pointer unlocked');        }       
     }
 
-    setMovementCursor = () => {
-        let body = document.querySelector('body');
+    public setMovementCursor() {
+        let body = document.querySelector('body')!;
 
         if (!body.classList.contains('selected-player')) {
             body.classList.add('selected-player');
@@ -212,8 +223,8 @@ export class Board extends EventTarget {
         }
     }
 
-    clearMovementCursor = () => {
-        let body = document.querySelector('body');
+    public clearMovementCursor() {
+        let body = document.querySelector('body')!;
 
         if (body.classList.contains('selected-player')) {
             body.classList.remove('selected-player');
@@ -223,8 +234,8 @@ export class Board extends EventTarget {
     /**
      * Find and dispatch whether a player's sprite is moving through another player's sprite
      */
-    checkPlayerCollisions = (player) => {
-        this.controller.map(e => {
+    public checkPlayerCollisions(player: Player) {
+        this.controllers.map(e => {
             if (e.player.htmlImage.id !== player.htmlImage.id) {                
                 let width = e.player.htmlImage.width / 4;
                 let height = e.player.htmlImage.height;
@@ -241,18 +252,14 @@ export class Board extends EventTarget {
 
                 if (cL < eR && cR > eL && cT < eB && cB > eT) {
                     this.drawPlayer(e.player, e.player.position, 0);
-                    let playerCollision = new CustomEvent('playercollision', {
-                         detail: {
-                            player: e.player
-                        }
-                    });
+                    let playerCollision = new PlayerEvent('playercollision', e.player);
                     e.player.dispatchEvent(playerCollision);
                 }
             }
         });
     }
 
-    updateMaximumMovement = (player) => {
+    public updateMaximumMovement(player: Player) {
         this.drawMaximumMovement(player);
     }
 }
