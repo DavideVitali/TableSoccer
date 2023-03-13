@@ -3,67 +3,68 @@ import { Controller } from "./controller.js";
 import { Game } from "./game.js";
 import { Player } from "./player.js";
 import { Team } from "./team.js";
-
-declare var game: Game;
-declare var board: Board;
-declare var team: Team;
+import { Point } from "./types.js";
 
 export class PlayerEvent extends CustomEvent<Player> {
-  constructor(public name: string, public player: Player) {
+  constructor(public name: string, public player: Player, public movement: number = 0) {
     super(name);
   }
 }
 
-let mouseEventsCanvas = document.getElementById(
-  "MouseEvents"
-)! as HTMLCanvasElement;
+export class GameEvents {
+  public mouseEventsCanvas: HTMLCanvasElement;
+  
+  constructor(private game: Game) {
+    this.mouseEventsCanvas = document.getElementById(
+      "MouseEvents"
+    )! as HTMLCanvasElement;
+  
+    this.mouseEventsCanvas.addEventListener("click", e => this.mouseEventCanvasListener(e));   
+  }
 
-mouseEventsCanvas.addEventListener("click", (e) => {
-  let coords = { x: e.pageX - board.leftUserCanvas.width, y: e.pageY };
-  let player = team.findPlayerByPoint(coords);
-  let controller;
-
-  if (player !== null) {
-    controller = board.controllers.find((e) => e.player.name === player!.name);
-
-    let playerClick = new CustomEvent("playerclick", {
-      detail: {
-        player: player,
-      },
-    });
-
-    player.dispatchEvent(playerClick);
-    board.dispatchEvent(playerClick);
-
-    if (player.selected === true) {
-      game.selectedPlayer = player;
-    } else {
-      /** giocatore deselezionato */
-    }
-  } else {
-    let waitingPlayer;
-    try {
-      waitingPlayer = board.findWaitingPlayer();
-    } catch (error) {
-      alert(error);
-    }
-
-    if (game.selectedPlayer !== null) {
-      controller = board.controllers.find(
-        (e) => e.player.name === game.selectedPlayer!.name
-      ) as Controller;
-      if (controller.player.moveDone === true) {
-        alert(`Hai già mosso ${controller.player.name}.`);
-        return;
+  private mouseEventCanvasListener(e: MouseEvent) {
+    let coords: Point = { x: e.pageX - this.game.board.leftUserCanvas.width, y: e.pageY };
+    let player = this.game.board.team.findPlayerByPoint(coords);
+    let controller: Controller;
+  
+    if (player !== null) {
+      controller = this.game.board.controllers.find((e) => e.player.name === player!.name) as Controller;
+  
+      let playerClick = new PlayerEvent("playerclick", player);
+  
+      player.dispatchEvent(playerClick);
+      this.game.board.dispatchEvent(playerClick);
+  
+      if (player.selected === true) {
+        this.game.selectedPlayer = player;
+      } else {
+        /** giocatore deselezionato */
       }
-      
-      controller.setTargetCoordinates(coords);
-      controller.startAnimation();
-
-      let playerClick = new PlayerEvent("playerclick", game.selectedPlayer);
-
-      game.clearSelectedPlayer();
-      board.dispatchEvent(playerClick);
+    } else {
+      let waitingPlayer;
+      try {
+        waitingPlayer = this.game.board.findWaitingPlayer();
+      } catch (error) {
+        alert(error);
+      }
+  
+      if (this.game.selectedPlayer !== null) {
+        controller = this.game.board.controllers.find(
+          (e) => e.player.name === this.game.selectedPlayer!.name
+        ) as Controller;
+        if (controller.player.moveDone === true) {
+          alert(`Hai già mosso ${controller.player.name}.`);
+          return;
+        }
+        
+        controller.setTargetCoordinates(coords);
+        controller.startAnimation();
+  
+        let playerClick = new PlayerEvent("playerclick", this.game.selectedPlayer);
+  
+        this.game.clearSelectedPlayer();
+        this.game.board.dispatchEvent(playerClick);
+      }
     }
   }
-});
+}

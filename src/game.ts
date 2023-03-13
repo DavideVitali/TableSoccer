@@ -1,24 +1,37 @@
+import { Board } from "./board.js";
+import { GameEvents } from "./events.js";
 import { Player } from "./player.js";
 
 export class Game {
-    private _selectedPlayer: Player | null;
+    _events: GameEvents;
 
-    constructor() {
-        this._selectedPlayer = null;
-    }
+  constructor(
+    private _board: Board,
+    private _selectedPlayer: Player | null = null,
+  ) {
+    this._events = new GameEvents(this);
+  }
 
-    get selectedPlayer() {
-        return this._selectedPlayer;
-    }
+  get events() {
+    return this._events;
+  }
 
-    set selectedPlayer(value) {
-        if (!value) {
-            throw new Error("player can't be null");
-        } 
-        this._selectedPlayer = value;
-    }
+  get board() {
+    return this._board;
+  }
 
-    public clearSelectedPlayer() {
-        this._selectedPlayer = null;
+  get selectedPlayer() {
+    return this._selectedPlayer;
+  }
+
+  set selectedPlayer(value) {
+    if (!value) {
+      throw new Error("player can't be null");
     }
+    this._selectedPlayer = value;
+  }
+
+  public clearSelectedPlayer() {
+    this._selectedPlayer = null;
+  }
 }
