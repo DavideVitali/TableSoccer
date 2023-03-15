@@ -2,8 +2,8 @@ import { Card } from "./card.js";
 import { Controller } from "./controller.js";
 import { PlayerEvent } from "./events.js";
 import { Player } from "./player.js";
+import { Coordinates, Position } from "./coords.js";
 import { Team, TeamElement } from "./team.js";
-import { Point } from "./types.js";
 declare const leftUserCard: Card;
 
 export class Board extends EventTarget {
@@ -17,7 +17,7 @@ export class Board extends EventTarget {
   leftUserContext: CanvasRenderingContext2D;
   rightUserCanvas: HTMLCanvasElement;
   rightUserContext: CanvasRenderingContext2D;
-  pointerLockStartPoint: Point | null;
+  pointerLockStartPoint: Coordinates | null;
   controllers: Controller[];
 
   constructor(public team: Team) {
@@ -172,23 +172,23 @@ export class Board extends EventTarget {
     return result[0];
   }
 
-  public formationToBoardCoordinates(position: Point) {
+  public formationToBoardCoordinates(position: Position) {
     return {
       x: Math.round((position.x * this.playersCanvas.width) / 100),
       y: Math.round((position.y * this.playersCanvas.height) / 100),
     };
   }
 
-  public boardCoordinatesToFormation(position: Point) {
+  public boardCoordinatesToFormation(position: Position) {
     return {
-      x: Math.round((this.playersCanvas.width * 100) / position.x),
-      y: Math.round((this.playersCanvas.height * 100) / position.y),
+      x: Math.round((this.playersCanvas.width * 100) / position.toRelative.x),
+      y: Math.round((this.playersCanvas.height * 100) / position.toRelative('PERCENT')),
     };
   }
 
   public clearPlayerRect(
     player: Player,
-    position: Point,
+    position: Coordinates,
     width: number,
     height: number
   ) {

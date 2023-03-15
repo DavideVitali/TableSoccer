@@ -1,4 +1,4 @@
-import { Position, PositionTransformer } from './position.js';
+import { Position, CoordinatesTransformer } from './coords.js';
 import { FormationType } from './types.js'
 
 export class Formation {
@@ -6,7 +6,7 @@ export class Formation {
         public positions: Position[],
         module: string,
         type: FormationType,
-        transformer: PositionTransformer
+        transformer: CoordinatesTransformer
     ) {
         this.positions = [];
         
