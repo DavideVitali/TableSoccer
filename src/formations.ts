@@ -1,7 +1,8 @@
-import { FormationType, Point } from './types.js'
+import { Position, PositionTransformer } from './position.js';
+import { FormationType } from './types.js'
 
-export class FormationPosition {
-    positions: Point[];
+export class Formation {
+    positions: Position[];
     constructor(module: string, type: FormationType) {
         this.positions = [];
         

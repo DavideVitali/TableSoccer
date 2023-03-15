@@ -1,4 +1,4 @@
-import { FormationPosition } from "./formations.js";
+import { Formation } from "./formations.js";
 import { Player } from "./player.js";
 import { Point } from "./types.js";
 
@@ -10,7 +10,7 @@ export type TeamElement = {
 export class Team {
     private _elements: TeamElement[];
 
-    constructor(formation: FormationPosition, players: Player[], private _name: string){
+    constructor(formation: Formation, players: Player[], private _name: string){
         this._elements = [];
         for (let i = 0; i < 11; i++) {
             let element: TeamElement = {
