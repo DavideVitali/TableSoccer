@@ -8,7 +8,6 @@ export type Dimension = {
     height: number
 };
 
-
 export class PositionTransformer {
     constructor(private d: Dimension) {}
     
@@ -35,10 +34,10 @@ export class PositionTransformer {
     }
 }
 
-export class Position<TTRansformer extends PositionTransformer> {
+export class Position {
     constructor(
         private point: Point,
-        private transformer: TTRansformer
+        private transformer: PositionTransformer
     ) { }
 
     toPercent(type: PositionType) {
