@@ -8,43 +8,44 @@ export type Dimension = {
     height: number
 };
 
-export interface IPositionTransformer {
-    toRelative(p: Point): Point;
-    toPercent(p: Point): Point;
-}
 
-export class PositionTransformer implements IPositionTransformer {
-    constructor(private p: Point, private d: Dimension, private t: PositionType) {}
+export class PositionTransformer {
+    constructor(private d: Dimension) {}
     
-    toPercent(p: Point) {
-        if (this.t === 'PERCENT') {
-            return p;
+    toPercent(point: Point, type: PositionType) {
+        if (type === 'PERCENT') {
+            return point;
         } else {
             return {
-                x: Math.round(p.x * 100 / this.d.width),
-                y: Math.round(p.y * 100 / this.d.height)
+                x: Math.round(point.x * 100 / this.d.width),
+                y: Math.round(point.y * 100 / this.d.height)
             } as Point;
         }
     }
 
-    toRelative(p: Point) {
-        if (this.t === 'PERCENT') {
+    toRelative(point: Point, type: PositionType) {
+        if (type === 'PERCENT') {
             return {
-                x: Math.round(this.d.width * p.x / 100),
-                y: Math.round(this.d.height * p.y / 100)
+                x: Math.round(this.d.width * point.x / 100),
+                y: Math.round(this.d.height * point.y / 100)
             } as Point;
         } else {
-            return p;
+            return point;
         }
     }
 }
 
-export class Position<
-    TTRansformer extends IPositionTransformer
-    > {
-        constructor(
-            private point: Point,
-            private transformer: TTRansformer
-        ) {
+export class Position<TTRansformer extends PositionTransformer> {
+    constructor(
+        private point: Point,
+        private transformer: TTRansformer
+    ) { }
+
+    toPercent(type: PositionType) {
+        return this.transformer.toPercent(this.point, type);    
+    }
+
+    toRelative(type: PositionType) {
+        return this.transformer.toRelative(this.point, type);
     }
 }
