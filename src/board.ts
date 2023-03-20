@@ -241,12 +241,16 @@ export class Board extends EventTarget {
     });
   }
 
-  // disegna il cerchio di massimo movimento di un giocatore
+  /**
+   * Draws the maximum movement radius of a player
+   * @param player
+   */
   public drawMaximumMovement(player: Player) {
+    let position = this.coordinatesTransformer.toPosition(player.point);
     let r = 5;
     let center = {
-      x: player.point.x + player.htmlImage.width / 4 / 2,
-      y: player.point.y + player.htmlImage.height + 4,
+      x: position.x + player.htmlImage.width / 4 / 2,
+      y: position.y + player.htmlImage.height + 4,
     };
     let ctx = this.mouseContext;
     ctx.beginPath();
