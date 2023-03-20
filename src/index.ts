@@ -39,5 +39,5 @@ Promise.all(
   tableSoccer.board.team.elements.map((element) => element.player.loadImage)
 ).then(() => {
   tableSoccer.board.drawTeam(tableSoccer.board.team.elements);
-  tableSoccer.board.drawMoveCursors();
+  tableSoccer.board.drawAvailabilityCursors();
 });

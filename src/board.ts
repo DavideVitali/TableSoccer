@@ -87,7 +87,7 @@ export class Board extends EventTarget {
 
       this.clearCanvas(this.mouseContext, this.mouseCanvas);
       this.clearCanvas(this.leftUserContext, this.leftUserCanvas);
-      this.drawMoveCursors();
+      this.drawAvailabilityCursors();
       this.switchSelected(clickedPlayer);
       if (clickedPlayer.selected && clickedPlayer.selected === true) {
         this.drawPlayerCard(leftUserCard, clickedPlayer);
@@ -215,23 +215,26 @@ export class Board extends EventTarget {
     );
   }
 
-  // disegna il triangolino che segnala la disponibilità a fare un movimento
-  public drawMoveCursors() {
+  /**
+   * Draws the availability triangle for every available player
+   */
+  public drawAvailabilityCursors() {
     let ctx = this.mouseContext;
     ctx.clearRect(0, 0, this.mouseCanvas.width, this.mouseCanvas.height);
-    this.controllers.map((e) => {
-      if (e.player.moving !== true && e.player.moveDone !== true) {
-        let startpoint = {
-          x: e.player.position.x + e.player.htmlImage.width / 4 / 2,
-          y: e.player.position.y + e.player.htmlImage.height + 4,
-        };
+    this.team.players.map((player) => {
+      let position = this.coordinatesTransformer.toPosition(player.point);
+      if (!player.moving && !player.moveDone) {
+        let startPosition = {
+          x: position.x + player.htmlImage.width / 4 / 2,
+          y: position.y + player.htmlImage.height + 4,
+        } as Position;
 
         let ctx = this.mouseContext;
         ctx.fillStyle = "#ffff00";
         ctx.beginPath();
-        ctx.moveTo(startpoint.x, startpoint.y);
-        ctx.lineTo(startpoint.x - 6, startpoint.y + 12);
-        ctx.lineTo(startpoint.x + 6, startpoint.y + 12);
+        ctx.moveTo(startPosition.x, startPosition.y);
+        ctx.lineTo(startPosition.x - 6, startPosition.y + 12);
+        ctx.lineTo(startPosition.x + 6, startPosition.y + 12);
         ctx.closePath();
         ctx.fill();
       }
