@@ -2,7 +2,7 @@ import { Card } from "./card.js";
 import { Controller } from "./controller.js";
 import { PlayerEvent } from "./events.js";
 import { Player } from "./player.js";
-import { Coordinates, Position } from "./coords.js";
+import { Coordinates, CoordinatesTransformer } from "./coords.js";
 import { Team, TeamElement } from "./team.js";
 declare const leftUserCard: Card;
 
@@ -18,9 +18,11 @@ export class Board extends EventTarget {
   rightUserCanvas: HTMLCanvasElement;
   rightUserContext: CanvasRenderingContext2D;
   pointerLockStartPoint: Coordinates | null;
-  controllers: Controller[];
 
-  constructor(public team: Team) {
+  constructor(
+    public team: Team,
+    public coordinatesTransformer: CoordinatesTransformer
+  ) {
     super();
     this.fieldCanvas = document.getElementById("Field")! as HTMLCanvasElement;
     this.fieldContext = this.fieldCanvas.getContext("2d")!;
@@ -54,17 +56,6 @@ export class Board extends EventTarget {
       this.fieldContext.drawImage(fieldImage, 0, 0);
     };
 
-    this.controllers = [];
-    for (let i = 0; i < 11; i++) {
-      // la formazione va trasformata in posizione effettiva
-      team.elements[i].position = this.formationToBoardCoordinates(
-        team.elements[i].position
-      );
-      this.controllers.push(
-        new Controller(team.elements[i].player, team.elements[i].position)
-      );
-    }
-
     this.addEventListener("requestedplayerrectclear", (e) => {
       let pEvent = e as PlayerEvent;
 
@@ -77,8 +68,8 @@ export class Board extends EventTarget {
     });
 
     this.addEventListener("playermoved", (e) => {
-        let pEvent = e as PlayerEvent;
-        this.drawPlayer(pEvent.player, pEvent.movement);
+      let pEvent = e as PlayerEvent;
+      this.drawPlayer(pEvent.player, pEvent.movement);
     });
 
     this.addEventListener("playercollision", (e) => {
@@ -140,15 +131,15 @@ export class Board extends EventTarget {
     let ctx = this.leftUserContext;
     ctx.font = "12px fff";
     if (card.template) {
-      ctx.drawImage(card.template, card.position.x, card.position.y);
+      ctx.drawImage(card.template, card.coordinates.x, card.coordinates.y);
     } else {
       throw new Error("Card template not loaded!");
     }
     const nameWidth = ctx.measureText(player.name).width;
     ctx.fillText(
       player.name,
-      (card.template.width - nameWidth) / 2 + card.position.x,
-      202 + card.position.y
+      (card.template.width - nameWidth) / 2 + card.coordinates.x,
+      202 + card.coordinates.y
     );
   }
 
@@ -170,20 +161,6 @@ export class Board extends EventTarget {
     }
 
     return result[0];
-  }
-
-  public formationToBoardCoordinates(position: Position) {
-    return {
-      x: Math.round((position.x * this.playersCanvas.width) / 100),
-      y: Math.round((position.y * this.playersCanvas.height) / 100),
-    };
-  }
-
-  public boardCoordinatesToFormation(position: Position) {
-    return {
-      x: Math.round((this.playersCanvas.width * 100) / position.toRelative.x),
-      y: Math.round((this.playersCanvas.height * 100) / position.toRelative('PERCENT')),
-    };
   }
 
   public clearPlayerRect(
