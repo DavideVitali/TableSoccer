@@ -261,6 +261,9 @@ export class Board extends EventTarget {
 
   public clearMaximumMovement() {}
 
+  /**
+   * POINTER LOCK MUST BE REVIEWED, LAST TIME DIDN'T WORK AS EXPECTED
+   */
   public setMaximumMovement() {
     if (document.pointerLockElement === this.mouseCanvas) {
       console.log("pointer locked");
