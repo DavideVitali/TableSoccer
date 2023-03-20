@@ -63,13 +63,12 @@ export class Board extends EventTarget {
 
     this.addEventListener("requestedplayerrectclear", (e) => {
       let pEvent = e as PlayerEvent;
+      let pDimensions = {
+        width: pEvent.player.htmlImage.width / 4,
+        height: pEvent.player.htmlImage.height,
+      } as Dimension;
 
-      this.clearPlayerRect(
-        pEvent.player,
-        pEvent.player.point,
-        pEvent.player.htmlImage.width / 4,
-        pEvent.player.htmlImage.height
-      );
+      this.clearPlayerRect(pEvent.player, pDimensions);
     });
 
     this.addEventListener("playermoved", (e) => {
@@ -171,11 +170,14 @@ export class Board extends EventTarget {
   /**
    * Clears the board rectangle hosting the player
    * @param player
-   * @param position
-   * @param dimension
    */
-  public clearPlayerRect(player: Player, dimension: Dimension) {
+  public clearPlayerRect(player: Player) {
     let position = this.coordinatesTransformer.toPosition(player.point);
+    let dimension = {
+      width: player.htmlImage.width / 4,
+      height: player.htmlImage.height,
+    } as Dimension;
+
     this.playersContext.clearRect(
       position.x,
       position.y,
