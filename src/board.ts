@@ -156,12 +156,13 @@ export class Board extends EventTarget {
     );
   }
 
+  /**
+   * Finds the player in a waiting state
+   */
   public findWaitingPlayer() {
-    let result = [];
-
-    result = this.controllers.map((element) => {
-      if (element.player.waiting === true) {
-        result.push(element.player);
+    let result = this.team.players.filter((p) => {
+      if (p.waiting) {
+        return p;
       }
     });
 
