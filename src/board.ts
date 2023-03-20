@@ -2,8 +2,13 @@ import { Card } from "./card.js";
 import { Controller } from "./controller.js";
 import { PlayerEvent } from "./events.js";
 import { Player } from "./player.js";
-import { Coordinates, CoordinatesTransformer } from "./coords.js";
-import { Team, TeamElement } from "./team.js";
+import {
+  Coordinates,
+  CoordinatesTransformer,
+  Dimension,
+  Position,
+} from "./coords.js";
+import { Team } from "./team.js";
 declare const leftUserCard: Card;
 
 export class Board extends EventTarget {
@@ -61,7 +66,7 @@ export class Board extends EventTarget {
 
       this.clearPlayerRect(
         pEvent.player,
-        pEvent.player.position,
+        pEvent.player.point,
         pEvent.player.htmlImage.width / 4,
         pEvent.player.htmlImage.height
       );
@@ -163,19 +168,26 @@ export class Board extends EventTarget {
     return result[0];
   }
 
-  public clearPlayerRect(
-    player: Player,
-    position: Coordinates,
-    width: number,
-    height: number
-  ) {
-    this.playersContext.clearRect(position.x, position.y, width, height);
+  /**
+   * Clears the board rectangle hosting the player
+   * @param player
+   * @param position
+   * @param dimension
+   */
+  public clearPlayerRect(player: Player, dimension: Dimension) {
+    let position = this.coordinatesTransformer.toPosition(player.point);
+    this.playersContext.clearRect(
+      position.x,
+      position.y,
+      dimension.width,
+      dimension.height
+    );
   }
 
   public drawPlayer(player: Player, currentStep: number) {
     const current = {
       image: player.htmlImage,
-      position: player.position,
+      position: player.point,
     };
 
     this.playersContext.drawImage(
@@ -218,8 +230,8 @@ export class Board extends EventTarget {
   public drawMaximumMovement(player: Player) {
     let r = 5;
     let center = {
-      x: player.position.x + player.htmlImage.width / 4 / 2,
-      y: player.position.y + player.htmlImage.height + 4,
+      x: player.point.x + player.htmlImage.width / 4 / 2,
+      y: player.point.y + player.htmlImage.height + 4,
     };
     let ctx = this.mouseContext;
     ctx.beginPath();
@@ -266,9 +278,9 @@ export class Board extends EventTarget {
         let height = e.player.htmlImage.height;
 
         // sprites boundaries
-        let cL = player.position.x;
+        let cL = player.point.x;
         let cR = cL + width;
-        let cT = player.position.y;
+        let cT = player.point.y;
         let cB = cT + height;
         let eL = e.player.position.x;
         let eR = eL + width;
