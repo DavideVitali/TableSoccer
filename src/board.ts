@@ -126,9 +126,12 @@ export class Board extends EventTarget {
     }
   }
 
-  public drawTeam(teamElements: TeamElement[]) {
-    teamElements.forEach((e) => {
-      this.drawPlayer(e.player, 0);
+  /**
+   * Draws the entire team on the board
+   */
+  public drawTeam() {
+    this.team.players.forEach((p) => {
+      this.drawPlayer(p, 0);
     });
   }
 
