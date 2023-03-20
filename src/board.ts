@@ -196,22 +196,22 @@ export class Board extends EventTarget {
     );
   }
 
+  /**
+   * Draws a single player on the board.
+   * @param player
+   * @param currentStep If the player is moving, represents the relevant frame in the sprite.
+   */
   public drawPlayer(player: Player, currentStep: number) {
-    const current = {
-      image: player.htmlImage,
-      position: player.point,
-    };
-
     this.playersContext.drawImage(
-      current.image,
-      (current.image.width / 4) * (currentStep % 4),
+      player.htmlImage,
+      (player.htmlImage.width / 4) * (currentStep % 4),
       0,
       32,
       32,
-      current.position.x,
-      current.position.y,
-      current.image.width / 4,
-      current.image.height
+      player.point.x,
+      player.point.y,
+      player.htmlImage.width / 4,
+      player.htmlImage.height
     );
   }
 
