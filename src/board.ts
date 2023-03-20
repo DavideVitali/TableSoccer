@@ -272,6 +272,7 @@ export class Board extends EventTarget {
     }
   }
 
+  // WHAT'S ITS JOB?!
   public setMovementCursor() {
     let body = document.querySelector("body")!;
 
@@ -282,6 +283,7 @@ export class Board extends EventTarget {
     }
   }
 
+  // WHAT'S ITS JOB?!
   public clearMovementCursor() {
     let body = document.querySelector("body")!;
 
