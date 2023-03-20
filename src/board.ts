@@ -323,6 +323,7 @@ export class Board extends EventTarget {
     });
   }
 
+  // REVIEW
   public updateMaximumMovement(player: Player) {
     this.drawMaximumMovement(player);
   }
