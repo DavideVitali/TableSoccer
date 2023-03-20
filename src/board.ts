@@ -296,25 +296,28 @@ export class Board extends EventTarget {
    * Find and dispatch whether a player's sprite is moving through another player's sprite
    */
   public checkPlayerCollisions(player: Player) {
-    this.controllers.map((e) => {
-      if (e.player.htmlImage.id !== player.htmlImage.id) {
-        let width = e.player.htmlImage.width / 4;
-        let height = e.player.htmlImage.height;
+    this.team.players.map((e) => {
+      if (e.htmlImage.id !== player.htmlImage.id) {
+        let position = this.coordinatesTransformer.toPosition(e.point);
+        let dimension = {
+          width: e.htmlImage.width / 4,
+          height: e.htmlImage.height,
+        } as Dimension;
 
         // sprites boundaries
-        let cL = player.point.x;
-        let cR = cL + width;
-        let cT = player.point.y;
-        let cB = cT + height;
-        let eL = e.player.position.x;
-        let eR = eL + width;
-        let eT = e.player.position.y;
-        let eB = eT + height;
+        let cL = position.x;
+        let cR = cL + dimension.width;
+        let cT = position.y;
+        let cB = cT + dimension.height;
+        let eL = position.x;
+        let eR = eL + dimension.width;
+        let eT = position.y;
+        let eB = eT + dimension.height;
 
         if (cL < eR && cR > eL && cT < eB && cB > eT) {
-          this.drawPlayer(e.player, 0);
-          let playerCollision = new PlayerEvent("playercollision", e.player);
-          e.player.dispatchEvent(playerCollision);
+          this.drawPlayer(e, 0);
+          let playerCollision = new PlayerEvent("playercollision", e);
+          e.dispatchEvent(playerCollision);
         }
       }
     });
