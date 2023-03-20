@@ -135,19 +135,24 @@ export class Board extends EventTarget {
     });
   }
 
+  /**
+   * Draws a player's card on the sidebar
+   * @param card
+   * @param player
+   */
   public drawPlayerCard(card: Card, player: Player) {
     let ctx = this.leftUserContext;
     ctx.font = "12px fff";
     if (card.template) {
-      ctx.drawImage(card.template, card.coordinates.x, card.coordinates.y);
+      ctx.drawImage(card.template, card.position.x, card.position.y);
     } else {
       throw new Error("Card template not loaded!");
     }
     const nameWidth = ctx.measureText(player.name).width;
     ctx.fillText(
       player.name,
-      (card.template.width - nameWidth) / 2 + card.coordinates.x,
-      202 + card.coordinates.y
+      (card.template.width - nameWidth) / 2 + card.position.x,
+      202 + card.position.y
     );
   }
 
