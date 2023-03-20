@@ -68,7 +68,7 @@ export class Board extends EventTarget {
         height: pEvent.player.htmlImage.height,
       } as Dimension;
 
-      this.clearPlayerRect(pEvent.player, pDimensions);
+      this.clearPlayerRectangle(pEvent.player);
     });
 
     this.addEventListener("playermoved", (e) => {
@@ -116,12 +116,13 @@ export class Board extends EventTarget {
     context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
+  // TO BE DEPRECATED BY STATE MACHINE IMPLEMENTATION
   public switchSelected(player: Player) {
-    let selectedPlayers = this.controllers.filter(
-      (c) => c.player.selected === true && c.player.name !== player.name
+    let selectedPlayers = this.team.players.filter(
+      (p) => p.selected === true && p.name !== player.name
     );
     if (selectedPlayers && selectedPlayers.length > 0) {
-      selectedPlayers.forEach((c) => c.player.deselect());
+      selectedPlayers.forEach((sp) => sp.deselect());
     }
   }
 
@@ -171,7 +172,7 @@ export class Board extends EventTarget {
    * Clears the board rectangle hosting the player
    * @param player
    */
-  public clearPlayerRect(player: Player) {
+  public clearPlayerRectangle(player: Player) {
     let position = this.coordinatesTransformer.toPosition(player.point);
     let dimension = {
       width: player.htmlImage.width / 4,
