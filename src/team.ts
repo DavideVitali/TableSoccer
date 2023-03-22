@@ -1,59 +1,53 @@
-import { FormationPosition } from "./formations.js";
+import { Coordinates } from "./coords.js";
+import { Formation } from "./formations.js";
 import { Player } from "./player.js";
-import { Point } from "./types.js";
 
-export type TeamElement = {
-    player: Player,
-    position: Point
-}
+export type SearchForType = "INDEX" | "PLAYER";
 
 export class Team {
-    private _elements: TeamElement[];
+  constructor(
+    private _formation: Formation,
+    private _players: Player[],
+    private _name: string
+  ) {
+    if (_players.length != 11) {
+      throw new Error("Must be 11 players.");
+    }
+  }
 
-    constructor(formation: FormationPosition, players: Player[], private _name: string){
-        this._elements = [];
-        for (let i = 0; i < 11; i++) {
-            let element: TeamElement = {
-                player: players[i], 
-                position: formation.positions[i]
-            };
-            this._elements.push(element);
-        }
-    }
+  get formation() {
+    return this._formation;
+  }
 
-    get elements() {
-        return this._elements;
-    }
+  get players() {
+    return this._players;
+  }
 
-    get name() {
-        return this._name;
-    }
-    
-    findPlayerIndexByPoint(point: Point) {
-        let teamIndex: number | null = null;
-        for (let i = 0; i < this.elements.length; i++) {
-            let position = this.elements[i].position;
-            if (position.x < point.x && (position.x + 32) > point.x
-            && position.y < point.y && (position.y + 32) > point.y) {
-                teamIndex = i;
-                break;
-            }
-        }
-        return teamIndex;
-    }
+  get name() {
+    return this._name;
+  }
 
-    findPlayerByPoint(point: Point) {
-        let p: Player | null = null;
-        for (let i = 0; i < this.elements.length; i++) {
-            let width = this.elements[i].player.htmlImage.width / 4;
-            let height = this.elements[i].player.htmlImage.height;
-            let position = this.elements[i].position;
-            if (position.x < point.x && (position.x + width) > point.x
-            && position.y < point.y && (position.y + height) > point.y) {
-                p = this.elements[i].player;
-                break;
-            }
-        }
-        return p;
+  /**
+   * Find a player by its position over the board.
+   * @param point
+   * @returns
+   */
+  findPlayer(point: Coordinates) {
+    let p: Player | null;
+    for (let i = 0; i < this.elements.length; i++) {
+      let width = this.elements[i].player.htmlImage.width / 4;
+      let height = this.elements[i].player.htmlImage.height;
+      let position = this.elements[i].position;
+      if (
+        position.x < point.x &&
+        position.x + width > point.x &&
+        position.y < point.y &&
+        position.y + height > point.y
+      ) {
+        p = this.elements[i].player;
+        break;
+      }
     }
+    return p;
+  }
 }

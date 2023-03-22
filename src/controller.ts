@@ -49,10 +49,10 @@ export class Controller extends EventTarget {
     /* the animation is flagged to be canceled when the player reaches the target position */
     if (this.targetCoordinates) {
       let proximityX = Math.floor(
-        Math.abs(this.targetCoordinates.x - this.player.position.x)
+        Math.abs(this.targetCoordinates.x - this.player.point.x)
       );
       let proximityY = Math.floor(
-        Math.abs(this.targetCoordinates.y - this.player.position.y)
+        Math.abs(this.targetCoordinates.y - this.player.point.y)
       );
       if (proximityX == 0 && proximityY == 0) {
         this.cancelAnimation();
@@ -71,22 +71,32 @@ export class Controller extends EventTarget {
 
       this.animationStartTimestamp = Date.now();
 
-      let requestedPlayerRectClear = new PlayerEvent("requestedplayerrectclear", this.player)
+      let requestedPlayerRectClear = new PlayerEvent(
+        "requestedplayerrectclear",
+        this.player
+      );
       this.player.dispatchEvent(requestedPlayerRectClear);
 
       /* because collisions cause the collided players to be redrawn, moving players are drawn after
             the redrawing of the collided ones, giving the impression they move "over" instead of "under" */
       //board.checkPlayerCollisions(this.player);
-      let requestedBoardCollisionCheckEvent = new PlayerEvent("requestedboardcollisioncheck", this.player)
+      let requestedBoardCollisionCheckEvent = new PlayerEvent(
+        "requestedboardcollisioncheck",
+        this.player
+      );
       this.player.dispatchEvent(requestedBoardCollisionCheckEvent);
 
-      this.player.position.x += this.targetDelta.x;
-      this.player.position.y += this.targetDelta.y;
+      this.player.point.x += this.targetDelta.x;
+      this.player.point.y += this.targetDelta.y;
       //board.drawMoveCursors();
       this.frameNumber++;
 
       //board.drawPlayer(this.player, this.frameNumber);
-      let playerMovedEvent = new PlayerEvent("playermoved", this.player, this.frameNumber);
+      let playerMovedEvent = new PlayerEvent(
+        "playermoved",
+        this.player,
+        this.frameNumber
+      );
       this.player.dispatchEvent(playerMovedEvent);
 
       if (cancelAnimationTriggered === true) {
@@ -122,8 +132,8 @@ export class Controller extends EventTarget {
     this.targetCoordinates = target;
 
     if (this.targetCoordinates) {
-      let dx = this.targetCoordinates.x - this.player.position.x;
-      let dy = this.targetCoordinates.y - this.player.position.y;
+      let dx = this.targetCoordinates.x - this.player.point.x;
+      let dy = this.targetCoordinates.y - this.player.point.y;
       let stepToDistance = Math.ceil(
         Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)) / this.playerStepLength
       );

@@ -54,11 +54,11 @@ export class Player extends EventTarget {
     this.addEventListener("playercollision", (e) => {});
   }
 
-  public get position() {
+  public get point() {
     return this._position;
   }
 
-  public set position(p) {
+  public set point(p) {
     this._position = p;
   }
 
