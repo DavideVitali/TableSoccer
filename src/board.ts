@@ -25,11 +25,9 @@ export class Board extends EventTarget {
   pointerLockStartPoint: Coordinates | null;
   coordinatesTransformer: CoordinatesTransformer;
   // TODO: how to call and instantiate the Renderer???
-  renderer?: Renderer; 
+  renderer?: Renderer;
 
-  constructor(
-    public team: Team,
-  ) {
+  constructor(public team: Team) {
     super();
     this.fieldCanvas = document.getElementById("Field")! as HTMLCanvasElement;
     this.fieldContext = this.fieldCanvas.getContext("2d")!;
@@ -54,10 +52,10 @@ export class Board extends EventTarget {
     // sets the coordinates transformer
     let fieldDimension: Dimension = {
       width: this.fieldCanvas.width,
-      height: this.fieldCanvas.height
+      height: this.fieldCanvas.height,
     };
     this.coordinatesTransformer = new CoordinatesTransformer(fieldDimension);
-    
+
     // pointerLock API setup
     this.mouseCanvas.requestPointerLock = this.mouseCanvas.requestPointerLock;
     document.exitPointerLock = document.exitPointerLock;
@@ -119,7 +117,7 @@ export class Board extends EventTarget {
   }
 
   // TODO: All drawing methods must use the renderer!
-  
+
   public clearCanvas(
     context: CanvasRenderingContext2D,
     canvas: HTMLCanvasElement
@@ -207,12 +205,18 @@ export class Board extends EventTarget {
     );
   }
 
+  // TODO: player.htmlImage is null at this point
+  // https://github.com/DavideVitali/TableSoccer/issues/5
+  // Looks like image loading methods are called but the resultin image
+  // isn't loaded into the player.htmlImage property
+  // The whole loading process must be redesigned, maybe dispatching an event so that
+  // the board can call the drawing method as soon an image (or all of them) are loaded.
   /**
    * Draws a single player on the board.
    * @param player
    * @param currentStep If the player is moving, represents the relevant frame in the sprite.
    */
-  public drawPlayer(player: Player, currentStep: number) {
+  public drawPlayer(player: Player, currentStep: number): void {
     this.playersContext.drawImage(
       player.htmlImage,
       (player.htmlImage.width / 4) * (currentStep % 4),
