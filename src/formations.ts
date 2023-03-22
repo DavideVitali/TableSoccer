@@ -2,8 +2,9 @@ import { Coordinates, Point } from "./coords.js";
 import { FormationType } from "./types.js";
 
 export class Formation {
+  coordinates: Point[];
+
   constructor(
-    public coordinates: Point[],
     module: string,
     type: FormationType
   ) {
