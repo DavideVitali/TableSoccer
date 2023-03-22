@@ -54,6 +54,9 @@ export class Player extends EventTarget {
     this.addEventListener("playercollision", (e) => {});
   }
 
+  /**
+   * Get the position of the player as a Point type.
+   */
   public get point() {
     return this._position;
   }
