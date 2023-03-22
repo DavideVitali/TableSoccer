@@ -1,9 +1,11 @@
 import { Board } from "./board.js";
 import { Card } from "./card.js";
+import { CoordinatesTransformer, Dimension } from "./coords.js";
 import { GameEvents } from "./events.js";
 import { Formation } from "./formations.js";
 import { Game } from "./game.js";
 import { Player } from "./player.js";
+import { Renderer } from "./renderer.js";
 import { Team } from "./team.js";
 import { FormationType } from "./types.js";
 
@@ -28,7 +30,7 @@ const tableSoccer = new Game(
         new Player("img/ita_playerDown.png", "Immobile"),
         new Player("img/ita_playerDown.png", "Chiesa"),
       ],
-      "ITALIA"
+      "ITALIA",
     )
   )
 );
@@ -36,8 +38,8 @@ const tableSoccer = new Game(
 //promises.push(leftUserCard);
 
 Promise.all(
-  tableSoccer.board.team.elements.map((element) => element.player.loadImage)
+  tableSoccer.board.team.players.map((element) => element.loadImage)
 ).then(() => {
-  tableSoccer.board.drawTeam(tableSoccer.board.team.elements);
+  tableSoccer.board.drawTeam();
   tableSoccer.board.drawAvailabilityCursors();
 });
