@@ -121,7 +121,7 @@ export class Renderer extends EventTarget {
     return this.player.moving;
   }
 
-  public setTargetCoordinates(target: Point) {
+  public setTargetCoordinates(target: Position) {
     if (this.player.moveDone === true) {
       throw new Error(`Hai già mosso ${this.player.name}`);
     }
