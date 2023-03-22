@@ -23,12 +23,12 @@ export class Board extends EventTarget {
   rightUserCanvas: HTMLCanvasElement;
   rightUserContext: CanvasRenderingContext2D;
   pointerLockStartPoint: Coordinates | null;
+  coordinatesTransformer: CoordinatesTransformer;
   // TODO: how to call and instantiate the Renderer???
   renderer?: Renderer; 
 
   constructor(
     public team: Team,
-    public coordinatesTransformer: CoordinatesTransformer,
   ) {
     super();
     this.fieldCanvas = document.getElementById("Field")! as HTMLCanvasElement;
@@ -51,6 +51,13 @@ export class Board extends EventTarget {
     this.rightUserContext = this.rightUserCanvas.getContext("2d")!;
     this.pointerLockStartPoint = null;
 
+    // sets the coordinates transformer
+    let fieldDimension: Dimension = {
+      width: this.fieldCanvas.width,
+      height: this.fieldCanvas.height
+    };
+    this.coordinatesTransformer = new CoordinatesTransformer(fieldDimension);
+    
     // pointerLock API setup
     this.mouseCanvas.requestPointerLock = this.mouseCanvas.requestPointerLock;
     document.exitPointerLock = document.exitPointerLock;
