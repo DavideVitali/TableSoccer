@@ -1,5 +1,5 @@
 import { Board } from "./board.js";
-import { Controller } from "./controller.js";
+import { Controller } from "./renderer.js";
 import { Coordinates } from "./coords.js";
 import { Game } from "./game.js";
 import { Player } from "./player.js";

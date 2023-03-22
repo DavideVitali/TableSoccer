@@ -1,5 +1,5 @@
 import { Card } from "./card.js";
-import { Controller } from "./controller.js";
+import { Controller } from "./renderer.js";
 import { PlayerEvent } from "./events.js";
 import { Player } from "./player.js";
 import {
