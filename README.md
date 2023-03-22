@@ -4,7 +4,7 @@
 
 ❔ TableSoccer is a 🧑‍🤝‍🧑 multiplayer, 🌀 turn-based, 🎲 dice and 🃏 cards ⚽ soccer game.
 
-🎯 This is a for-fun side project. There is no official roadmap, but I sorta have an idea of what to do. Ish.
+🎯 This is a for-fun side project. There is no official roadmap, but I have an idea of what to do. Ish.
 - [x] Establish a general layout
 - [x] Create some basic game assets
 - [ ] Get at least a first basic group of soccer players moving around
