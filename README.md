@@ -13,5 +13,3 @@
 - [ ] Add multiplayer capabilites
 - [ ] Train an AI model to add vs-Computer playing mode
 - [ ] ~~Profit~~ Party! 🎉
-
-🥂 Collaborations are welcomed!
