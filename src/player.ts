@@ -1,4 +1,4 @@
-import { Point } from "./types.js";
+import { Point } from "./coords.js";
 import { Utils } from "./utils.js";
 
 export class Player extends EventTarget {
