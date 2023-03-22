@@ -1,22 +1,22 @@
 import { Board } from "./board.js";
+import { Position } from "./coords.js";
 import { PlayerEvent } from "./events.js";
 import { Player } from "./player.js";
-import { Point } from "./types.js";
 declare const board: Board;
 
-export class Controller extends EventTarget {
+export class Renderer extends EventTarget {
   private frameNumber: number;
   private cancelAnimationRequest;
-  private targetCoordinates?: Point | null;
-  private targetDelta: Point = { x: 0, y: 0 };
+  private targetCoordinates?: Position | null;
+  private targetDelta: Position = { x: 0, y: 0 };
   private previousCollision?: boolean | null;
-  private moveRequestCursorPosition?: Point | null;
+  private moveRequestCursorPosition?: Position | null;
   private playerStepLength: number;
 
   animationStartTimestamp: any;
   fpsInterval: number;
 
-  constructor(public player: Player, public position: Point) {
+  constructor(public player: Player, public position: Position) {
     super();
     this.frameNumber = 0;
     this.cancelAnimationRequest = false;

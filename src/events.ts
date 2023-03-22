@@ -1,5 +1,5 @@
 import { Board } from "./board.js";
-import { Controller } from "./renderer.js";
+import { Renderer } from "./renderer.js";
 import { Coordinates } from "./coords.js";
 import { Game } from "./game.js";
 import { Player } from "./player.js";
@@ -34,51 +34,51 @@ export class GameEvents {
       y: e.pageY,
     };
     let player = this.game.board.team.findPlayer(position);
-    let controller: Controller;
+    let controller: Renderer;
 
-    if (player !== null) {
-      controller = this.game.board.controllers.find(
-        (e) => e.player.name === player!.name
-      ) as Controller;
+    // if (player !== null) {
+    //   controller = this.game.board.controllers.find(
+    //     (e) => e.player.name === player!.name
+    //   ) as Renderer;
 
-      let playerClick = new PlayerEvent("playerclick", player);
+    //   let playerClick = new PlayerEvent("playerclick", player);
 
-      player.dispatchEvent(playerClick);
-      this.game.board.dispatchEvent(playerClick);
+    //   player.dispatchEvent(playerClick);
+    //   this.game.board.dispatchEvent(playerClick);
 
-      if (player.selected === true) {
-        this.game.selectedPlayer = player;
-      } else {
-        /** giocatore deselezionato */
-      }
-    } else {
-      let waitingPlayer;
-      try {
-        waitingPlayer = this.game.board.findWaitingPlayer();
-      } catch (error) {
-        alert(error);
-      }
+    //   if (player.selected === true) {
+    //     this.game.selectedPlayer = player;
+    //   } else {
+    //     /** giocatore deselezionato */
+    //   }
+    // } else {
+    //   let waitingPlayer;
+    //   try {
+    //     waitingPlayer = this.game.board.findWaitingPlayer();
+    //   } catch (error) {
+    //     alert(error);
+    //   }
 
-      if (this.game.selectedPlayer !== null) {
-        controller = this.game.board.controllers.find(
-          (e) => e.player.name === this.game.selectedPlayer!.name
-        ) as Controller;
-        if (controller.player.moveDone === true) {
-          alert(`Hai già mosso ${controller.player.name}.`);
-          return;
-        }
+    //   if (this.game.selectedPlayer !== null) {
+    //     controller = this.game.board.controllers.find(
+    //       (e) => e.player.name === this.game.selectedPlayer!.name
+    //     ) as Renderer;
+    //     if (controller.player.moveDone === true) {
+    //       alert(`Hai già mosso ${controller.player.name}.`);
+    //       return;
+    //     }
 
-        controller.setTargetCoordinates(position);
-        controller.startAnimation();
+    //     controller.setTargetCoordinates(position);
+    //     controller.startAnimation();
 
-        let playerClick = new PlayerEvent(
-          "playerclick",
-          this.game.selectedPlayer
-        );
+    //     let playerClick = new PlayerEvent(
+    //       "playerclick",
+    //       this.game.selectedPlayer
+    //     );
 
-        this.game.clearSelectedPlayer();
-        this.game.board.dispatchEvent(playerClick);
-      }
-    }
+    //     this.game.clearSelectedPlayer();
+    //     this.game.board.dispatchEvent(playerClick);
+    //   }
+    // }
   }
 }
