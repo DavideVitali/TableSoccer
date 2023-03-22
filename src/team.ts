@@ -1,4 +1,4 @@
-import { Coordinates } from "./coords.js";
+import { Coordinates, Point, Position } from "./coords.js";
 import { Formation } from "./formations.js";
 import { Player } from "./player.js";
 
@@ -32,22 +32,20 @@ export class Team {
    * @param point
    * @returns
    */
-  findPlayer(point: Coordinates) {
-    let p: Player | null;
-    for (let i = 0; i < this.elements.length; i++) {
-      let width = this.elements[i].player.htmlImage.width / 4;
-      let height = this.elements[i].player.htmlImage.height;
-      let position = this.elements[i].position;
+  findPlayer(point: Point) {
+    for (let i = 0; i < this._players.length; i++) {
+      let width = this._players[i].htmlImage.width / 4;
+      let height = this._players[i].htmlImage.height;
+      let playerPoint = this._players[i].point;
       if (
-        position.x < point.x &&
-        position.x + width > point.x &&
-        position.y < point.y &&
-        position.y + height > point.y
+        playerPoint.x < point.x &&
+        playerPoint.x + width > point.x &&
+        playerPoint.y < point.y &&
+        playerPoint.y + height > point.y
       ) {
-        p = this.elements[i].player;
-        break;
+        return this._players[i];
       }
     }
-    return p;
+    return null;
   }
 }
