@@ -23,11 +23,12 @@ export class Board extends EventTarget {
   rightUserCanvas: HTMLCanvasElement;
   rightUserContext: CanvasRenderingContext2D;
   pointerLockStartPoint: Coordinates | null;
+  // TODO: how to call and instantiate the Renderer???
+  renderer?: Renderer; 
 
   constructor(
     public team: Team,
     public coordinatesTransformer: CoordinatesTransformer,
-    public renderer: Renderer
   ) {
     super();
     this.fieldCanvas = document.getElementById("Field")! as HTMLCanvasElement;
