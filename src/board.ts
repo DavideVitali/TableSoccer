@@ -26,7 +26,8 @@ export class Board extends EventTarget {
 
   constructor(
     public team: Team,
-    public coordinatesTransformer: CoordinatesTransformer
+    public coordinatesTransformer: CoordinatesTransformer,
+    public renderer: Renderer
   ) {
     super();
     this.fieldCanvas = document.getElementById("Field")! as HTMLCanvasElement;
@@ -109,6 +110,8 @@ export class Board extends EventTarget {
     });
   }
 
+  // TODO: All drawing methods must use the renderer!
+  
   public clearCanvas(
     context: CanvasRenderingContext2D,
     canvas: HTMLCanvasElement
