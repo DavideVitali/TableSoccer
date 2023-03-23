@@ -5,7 +5,7 @@ import { GameEvents } from "./events.js";
 import { Formation } from "./formations.js";
 import { Game } from "./game.js";
 import { Player } from "./player.js";
-import { Renderer } from "./renderer.js";
+import { Renderer } from "./renderers/player-renderer.js";
 import { Team } from "./team.js";
 import { FormationType } from "./types.js";
 
