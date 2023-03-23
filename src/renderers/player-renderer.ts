@@ -25,18 +25,6 @@ export class PlayerRenderer extends EventTarget {
 
     // 1 player step = 16 px; (current best: 16)
     this.playerStepLength = stepLength;
-
-    this.addEventListener("playerinitialized", (e) => {
-      this.onPlayerInizialized((e as PlayerEvent).detail.player)
-    });
-  }
-
-  private onPlayerInizialized(player: Player) {
-    console.log(`Loading image of player ${player.name}`);
-    player.loadImage.then((img) => {
-      player.htmlImage = img;
-      player.htmlImage.setAttribute("id", player.name);
-    });
   }
 
   private animateSprite(player: Player, timestamp: number = 0) {

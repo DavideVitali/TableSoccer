@@ -53,14 +53,6 @@ export class Player extends EventTarget {
     });
 
     this.addEventListener("playercollision", (e) => {});
-
-    let playerInitializedEvent = new PlayerEvent("playerinitialized", {
-      player: this,
-      movement: 0,
-    } as PlayerEventDetail);
-
-    console.log(`Dispatching initialization of player ${this.name}...`);
-    this.dispatchEvent(playerInitializedEvent);
   }
 
   /**

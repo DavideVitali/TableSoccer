@@ -35,9 +35,9 @@ const tableSoccer = new Game(
 
 //promises.push(leftUserCard);
 
-Promise.all(
-  tableSoccer.board.team.players.map((element) => element.loadImage)
-).then(() => {
-  tableSoccer.board.drawTeam();
-  tableSoccer.board.drawAvailabilityCursors();
-});
+// Promise.all(
+//   tableSoccer.board.team.players.map((element) => element.loadImage)
+// ).then(() => {
+//   tableSoccer.board.drawTeam();
+//   tableSoccer.board.drawAvailabilityCursors();
+// });

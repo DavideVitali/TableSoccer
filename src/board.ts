@@ -24,6 +24,7 @@ export class Board extends EventTarget {
   rightUserContext: CanvasRenderingContext2D;
   pointerLockStartPoint: Coordinates | null;
   coordinatesTransformer: CoordinatesTransformer;
+
   // TODO: how to call and instantiate the Renderer???
   playerRenderer: PlayerRenderer;
 
@@ -50,6 +51,15 @@ export class Board extends EventTarget {
     )! as HTMLCanvasElement;
     this.rightUserContext = this.rightUserCanvas.getContext("2d")!;
     this.pointerLockStartPoint = null;
+
+    // players initialization
+    team.players.forEach((p) => {
+      p.loadImage.then((img) => {
+        p.htmlImage = img;
+        p.htmlImage.setAttribute("id", p.name);
+        this.drawPlayer(p, 0);
+      });
+    });
 
     // sets the coordinates transformer
     let fieldDimension: Dimension = {
@@ -207,26 +217,25 @@ export class Board extends EventTarget {
     );
   }
 
-  // TODO: player.htmlImage is null at this point
-  // https://github.com/DavideVitali/TableSoccer/issues/5
-  // Looks like image loading methods are called but the resultin image
-  // isn't loaded into the player.htmlImage property
-  // The whole loading process must be redesigned, maybe dispatching an event so that
-  // the board can call the drawing method as soon an image (or all of them) are loaded.
   /**
    * Draws a single player on the board.
    * @param player
    * @param currentStep If the player is moving, represents the relevant frame in the sprite.
    */
   public drawPlayer(player: Player, currentStep: number): void {
+    let position = this.coordinatesTransformer.toPosition({
+      x: player.point.x,
+      y: player.point.y,
+    });
+    
     this.playersContext.drawImage(
       player.htmlImage,
       (player.htmlImage.width / 4) * (currentStep % 4),
       0,
       32,
       32,
-      player.point.x,
-      player.point.y,
+      position.x,
+      position.y,
       player.htmlImage.width / 4,
       player.htmlImage.height
     );
