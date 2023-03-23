@@ -14,6 +14,12 @@
 
 **Note**: whenever an animation occurs, the colliding sprite is considered to be the one the animated sprite is passing over.
 
+# `Renderer`
+
+|Event|Description
+---|---
+|[*playerinitialized*](#playerinizialized)|The `Player` class has been instantiated.
+
 # `Player`
 
 |Event|Description
