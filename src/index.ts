@@ -1,7 +1,7 @@
+// per ora i giocatori hanno tutti lo stesso sprite
+
 import { Board } from "./board.js";
 import { Card } from "./card.js";
-import { CoordinatesTransformer, Dimension } from "./coords.js";
-import { GameEvents } from "./events.js";
 import { Formation } from "./formations.js";
 import { Game } from "./game.js";
 import { Player } from "./player.js";
@@ -9,30 +9,28 @@ import { PlayerRenderer } from "./renderers/player-renderer.js";
 import { Team } from "./team.js";
 import { FormationType } from "./types.js";
 
-// per ora i giocatori hanno tutti lo stesso sprite
-
-const leftUserCard = new Card({ x: 10, y: 10 });
+//const leftUserCard = new Card({ x: 10, y: 10 });
+const playerRenderer = new PlayerRenderer(1000, 16);
+const blueTeam = new Team(
+  /* _formation */ new Formation("443", FormationType.OFFENSE),
+  /* _player */ [
+    new Player("img/ita_playerDown.png", "Donnarumma"),
+    new Player("img/ita_playerDown.png", "Di Lorenzo"),
+    new Player("img/ita_playerDown.png", "Bonucci"),
+    new Player("img/ita_playerDown.png", "Chiellini"),
+    new Player("img/ita_playerDown.png", "Emerson"),
+    new Player("img/ita_playerDown.png", "Barella"),
+    new Player("img/ita_playerDown.png", "Jorginho"),
+    new Player("img/ita_playerDown.png", "Verratti"),
+    new Player("img/ita_playerDown.png", "Insigne"),
+    new Player("img/ita_playerDown.png", "Immobile"),
+    new Player("img/ita_playerDown.png", "Chiesa"),
+  ],
+  /* name */"ITALIA"
+);
 
 const tableSoccer = new Game(
-  new Board(
-    new Team(
-      new Formation("443", FormationType.OFFENSE),
-      [
-        new Player("img/ita_playerDown.png", "Donnarumma"),
-        new Player("img/ita_playerDown.png", "Di Lorenzo"),
-        new Player("img/ita_playerDown.png", "Bonucci"),
-        new Player("img/ita_playerDown.png", "Chiellini"),
-        new Player("img/ita_playerDown.png", "Emerson"),
-        new Player("img/ita_playerDown.png", "Barella"),
-        new Player("img/ita_playerDown.png", "Jorginho"),
-        new Player("img/ita_playerDown.png", "Verratti"),
-        new Player("img/ita_playerDown.png", "Insigne"),
-        new Player("img/ita_playerDown.png", "Immobile"),
-        new Player("img/ita_playerDown.png", "Chiesa"),
-      ],
-      "ITALIA",
-    )
-  )
+  new Board(blueTeam, playerRenderer)
 );
 
 //promises.push(leftUserCard);

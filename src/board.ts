@@ -1,6 +1,6 @@
 import { Card } from "./card.js";
 import { PlayerRenderer } from "./renderers/player-renderer.js";
-import { PlayerEvent } from "./events.js";
+import { PlayerEvent, PlayerEventDetail } from "./events.js";
 import { Player } from "./player.js";
 import {
   Coordinates,
@@ -25,10 +25,12 @@ export class Board extends EventTarget {
   pointerLockStartPoint: Coordinates | null;
   coordinatesTransformer: CoordinatesTransformer;
   // TODO: how to call and instantiate the Renderer???
-  playerRenderer?: PlayerRenderer;
+  playerRenderer: PlayerRenderer;
 
-  constructor(public team: Team) {
+  constructor(public team: Team, playerRenderer: PlayerRenderer) {
     super();
+    this.playerRenderer = playerRenderer;
+
     this.fieldCanvas = document.getElementById("Field")! as HTMLCanvasElement;
     this.fieldContext = this.fieldCanvas.getContext("2d")!;
     this.mouseCanvas = document.getElementById(
@@ -71,26 +73,26 @@ export class Board extends EventTarget {
     this.addEventListener("requestedplayerrectclear", (e) => {
       let pEvent = e as PlayerEvent;
       let pDimensions = {
-        width: pEvent.player.htmlImage.width / 4,
-        height: pEvent.player.htmlImage.height,
+        width: pEvent.detail.player.htmlImage.width / 4,
+        height: pEvent.detail.player.htmlImage.height,
       } as Dimension;
 
-      this.clearPlayerRectangle(pEvent.player);
+      this.clearPlayerRectangle(pEvent.detail.player);
     });
 
     this.addEventListener("playermoved", (e) => {
       let pEvent = e as PlayerEvent;
-      this.drawPlayer(pEvent.player, pEvent.movement);
+      this.drawPlayer(pEvent.detail.player, pEvent.detail.movement);
     });
 
     this.addEventListener("playercollision", (e) => {
       let pEvent = e as PlayerEvent;
-      this.drawPlayer(pEvent.player, pEvent.movement);
+      this.drawPlayer(pEvent.detail.player, pEvent.detail.movement);
     });
 
     this.addEventListener("playerclick", (e) => {
       let pEvent = e as PlayerEvent;
-      let clickedPlayer = pEvent.player;
+      let clickedPlayer = pEvent.detail.player;
 
       this.clearCanvas(this.mouseContext, this.mouseCanvas);
       this.clearCanvas(this.leftUserContext, this.leftUserCanvas);
@@ -331,7 +333,10 @@ export class Board extends EventTarget {
 
         if (cL < eR && cR > eL && cT < eB && cB > eT) {
           this.drawPlayer(e, 0);
-          let playerCollision = new PlayerEvent("playercollision", e);
+          let playerCollision = new PlayerEvent("playercollision", {
+            player: e,
+            movement: 0,
+          } as PlayerEventDetail);
           e.dispatchEvent(playerCollision);
         }
       }

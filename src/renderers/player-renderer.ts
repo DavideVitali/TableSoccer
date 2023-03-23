@@ -1,5 +1,5 @@
 import { Position } from "../coords.js";
-import { PlayerEvent } from "../events.js";
+import { PlayerEvent, PlayerEventDetail } from "../events.js";
 import { Player } from "../player.js";
 
 export class PlayerRenderer extends EventTarget {
@@ -14,34 +14,37 @@ export class PlayerRenderer extends EventTarget {
   animationStartTimestamp: any;
   fpsInterval: number;
 
-  constructor(public player: Player, public position: Position) {
+  constructor(speed: number, stepLength: number) {
     super();
     this.frameNumber = 0;
     this.cancelAnimationRequest = false;
 
-    // animation speed settings
-    this.fpsInterval = 1000 / 50;
+    // animation speed settings (current best: 1000)
+    this.fpsInterval = speed / 50;
     this.animationStartTimestamp;
 
-    // 1 player step = 16 px;
-    this.playerStepLength = 16;
+    // 1 player step = 16 px; (current best: 16)
+    this.playerStepLength = stepLength;
 
-    this.addEventListener("playerInitialized", (e) => {
-      let player = (e as PlayerEvent).player;
-      player.loadImage.then((img) => {
-        player.htmlImage = img;
-        player.htmlImage.setAttribute("id", player.name);
-        this.moveRequestCursorPosition = {
-          x: position.x + img.width / 4 / 2,
-          y: position.y + img.height + 4,
-        };
-      });
-    })
+    this.addEventListener("playerinitialized", (e) => {
+      this.onPlayerInizialized((e as PlayerEvent).detail.player)
+    });
   }
 
-  
+  private onPlayerInizialized(player: Player) {
+    console.log(`Loading image of player ${player.name}`);
+    player.loadImage.then((img) => {
+      player.htmlImage = img;
+      player.htmlImage.setAttribute("id", player.name);
+    });
+  }
 
-  private animateSprite(timestamp: number = 0) {
+  private animateSprite(player: Player, timestamp: number = 0) {
+    let detailEvent: PlayerEventDetail = {
+      player: player,
+      movement: this.frameNumber,
+    };
+
     let rafId = requestAnimationFrame(() => this.animateSprite);
 
     if (!this.animationStartTimestamp) {
@@ -51,10 +54,10 @@ export class PlayerRenderer extends EventTarget {
     /* the animation is flagged to be canceled when the player reaches the target position */
     if (this.targetCoordinates) {
       let proximityX = Math.floor(
-        Math.abs(this.targetCoordinates.x - this.player.point.x)
+        Math.abs(this.targetCoordinates.x - player.point.x)
       );
       let proximityY = Math.floor(
-        Math.abs(this.targetCoordinates.y - this.player.point.y)
+        Math.abs(this.targetCoordinates.y - player.point.y)
       );
       if (proximityX == 0 && proximityY == 0) {
         this.cancelAnimation();
@@ -75,35 +78,32 @@ export class PlayerRenderer extends EventTarget {
 
       let requestedPlayerRectClear = new PlayerEvent(
         "requestedplayerrectclear",
-        this.player
+        detailEvent
       );
-      this.player.dispatchEvent(requestedPlayerRectClear);
+      player.dispatchEvent(requestedPlayerRectClear);
 
       /* because collisions cause the collided players to be redrawn, moving players are drawn after
             the redrawing of the collided ones, giving the impression they move "over" instead of "under" */
       //board.checkPlayerCollisions(this.player);
       let requestedBoardCollisionCheckEvent = new PlayerEvent(
         "requestedboardcollisioncheck",
-        this.player
+        detailEvent
       );
-      this.player.dispatchEvent(requestedBoardCollisionCheckEvent);
+      player.dispatchEvent(requestedBoardCollisionCheckEvent);
 
-      this.player.point.x += this.targetDelta.x;
-      this.player.point.y += this.targetDelta.y;
+      player.point.x += this.targetDelta.x;
+      player.point.y += this.targetDelta.y;
       //board.drawMoveCursors();
       this.frameNumber++;
+      detailEvent.movement++;
 
       //board.drawPlayer(this.player, this.frameNumber);
-      let playerMovedEvent = new PlayerEvent(
-        "playermoved",
-        this.player,
-        this.frameNumber
-      );
-      this.player.dispatchEvent(playerMovedEvent);
+      let playerMovedEvent = new PlayerEvent("playermoved", detailEvent);
+      player.dispatchEvent(playerMovedEvent);
 
       if (cancelAnimationTriggered === true) {
-        let playerStoppedEvent = new PlayerEvent("playerstopped", this.player);
-        this.player.dispatchEvent(playerStoppedEvent);
+        let playerStoppedEvent = new PlayerEvent("playerstopped", detailEvent);
+        player.dispatchEvent(playerStoppedEvent);
       }
     }
   }
@@ -114,28 +114,28 @@ export class PlayerRenderer extends EventTarget {
     this.targetDelta = { x: 0, y: 0 };
   }
 
-  public startAnimation() {
+  public startAnimation(player: Player) {
     this.cancelAnimationRequest = false;
-    this.animateSprite();
+    this.animateSprite(player);
   }
 
-  public isPlaying() {
-    return this.player.moving;
+  public isPlaying(player: Player) {
+    return player.moving;
   }
 
-  public setTargetCoordinates(target: Position) {
-    if (this.player.moveDone === true) {
-      throw new Error(`Hai già mosso ${this.player.name}`);
+  public setTargetCoordinates(player: Player, target: Position) {
+    if (player.moveDone === true) {
+      throw new Error(`Hai già mosso ${player.name}`);
     }
 
     // target coordinates are set at the feet of the player:
-    target.x -= this.player.htmlImage.width / 4 / 2;
-    target.y -= this.player.htmlImage.height;
+    target.x -= player.htmlImage.width / 4 / 2;
+    target.y -= player.htmlImage.height;
     this.targetCoordinates = target;
 
     if (this.targetCoordinates) {
-      let dx = this.targetCoordinates.x - this.player.point.x;
-      let dy = this.targetCoordinates.y - this.player.point.y;
+      let dx = this.targetCoordinates.x - player.point.x;
+      let dy = this.targetCoordinates.y - player.point.y;
       let stepToDistance = Math.ceil(
         Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2)) / this.playerStepLength
       );

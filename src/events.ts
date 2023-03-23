@@ -5,13 +5,27 @@ import { Game } from "./game.js";
 import { Player } from "./player.js";
 import { Team } from "./team.js";
 
-export class PlayerEvent extends CustomEvent<Player> {
+export type PlayerEventDetail = {
+  player: Player,
+  movement: number
+};
+
+export class PlayerEvent extends CustomEvent<PlayerEventDetail> {
   constructor(
-    public name: string,
-    public player: Player,
-    public movement: number = 0
+    name: string,
+    detail: PlayerEventDetail
   ) {
-    super(name);
+    let init = new PlayerEventInit(detail);
+    super(name, init);
+  }
+}
+
+class PlayerEventInit implements CustomEventInit<PlayerEventDetail> {
+  detail?: PlayerEventDetail;
+
+  constructor(eventDetail: PlayerEventDetail) {
+    if (!eventDetail.player) throw new Error('PlayerEventInit needs a non-null player instance.');
+    this.detail = eventDetail;
   }
 }
 
