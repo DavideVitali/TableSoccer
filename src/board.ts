@@ -1,5 +1,5 @@
 import { Card } from "./card.js";
-import { Renderer } from "./renderers/player-renderer.js";
+import { PlayerRenderer } from "./renderers/player-renderer.js";
 import { PlayerEvent } from "./events.js";
 import { Player } from "./player.js";
 import {
@@ -25,7 +25,7 @@ export class Board extends EventTarget {
   pointerLockStartPoint: Coordinates | null;
   coordinatesTransformer: CoordinatesTransformer;
   // TODO: how to call and instantiate the Renderer???
-  renderers: [Team, Renderer][];
+  playerRenderer?: PlayerRenderer;
 
   constructor(public team: Team) {
     super();

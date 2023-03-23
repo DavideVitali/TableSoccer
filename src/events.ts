@@ -1,5 +1,5 @@
 import { Board } from "./board.js";
-import { Renderer } from "./renderers/player-renderer.js";
+import { PlayerRenderer } from "./renderers/player-renderer.js";
 import { Coordinates } from "./coords.js";
 import { Game } from "./game.js";
 import { Player } from "./player.js";
@@ -34,7 +34,7 @@ export class GameEvents {
       y: e.pageY,
     };
     let player = this.game.board.team.findPlayer(position);
-    let controller: Renderer;
+    let controller: PlayerRenderer;
 
     // if (player !== null) {
     //   controller = this.game.board.controllers.find(
