@@ -7,12 +7,12 @@ import { Game } from "./game.js";
 import { Player } from "./player.js";
 import { PlayerRenderer } from "./renderers/player-renderer.js";
 import { Team } from "./team.js";
-import { FormationType } from "./types.js";
+import { FormationModule, FormationType } from "./types.js";
 
 //const leftUserCard = new Card({ x: 10, y: 10 });
 const playerRenderer = new PlayerRenderer(1000, 16);
 const blueTeam = new Team(
-  /* _formation */ new Formation("443", FormationType.OFFENSE),
+  /* _formation */ new Formation(FormationModule._442, FormationType.OFFENSE),
   /* _player */ [
     new Player("img/ita_playerDown.png", "Donnarumma"),
     new Player("img/ita_playerDown.png", "Di Lorenzo"),
