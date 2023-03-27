@@ -1,6 +1,8 @@
 import { Position } from "../coords.js";
 import { PlayerEvent, PlayerEventDetail } from "../events.js";
 import { Player } from "../player.js";
+import { SETTINGS } from "../settings.js";
+import { Dimension } from "../types.js";
 
 export class PlayerRenderer extends EventTarget {
   private frameNumber: number;
@@ -14,17 +16,17 @@ export class PlayerRenderer extends EventTarget {
   animationStartTimestamp: any;
   fpsInterval: number;
 
-  constructor(speed: number, stepLength: number) {
+  constructor(private context: CanvasRenderingContext2D) {
     super();
     this.frameNumber = 0;
     this.cancelAnimationRequest = false;
 
     // animation speed settings (current best: 1000)
-    this.fpsInterval = speed / 50;
+    this.fpsInterval = SETTINGS.speed.frameRate / 50;
     this.animationStartTimestamp;
 
     // 1 player step = 16 px; (current best: 16)
-    this.playerStepLength = stepLength;
+    this.playerStepLength = SETTINGS.speed.stepLength;
   }
 
   private animateSprite(player: Player, timestamp: number = 0) {
@@ -111,6 +113,7 @@ export class PlayerRenderer extends EventTarget {
     return player.moving;
   }
 
+  
   public setTargetCoordinates(player: Player, target: Position) {
     if (player.moveDone === true) {
       throw new Error(`Hai già mosso ${player.name}`);
@@ -132,5 +135,42 @@ export class PlayerRenderer extends EventTarget {
     } else {
       throw new Error("No target coordinates set!");
     }
+  }
+
+  /**
+   * Draws a single player on the board.
+   * @param player
+   * @param currentStep If the player is moving, represents the relevant frame in the sprite.
+   */
+  drawPlayer(player: Player, currentStep: number, position: Position) {
+    this.context.drawImage(
+      player.htmlImage,
+      (player.htmlImage.width / 4) * (currentStep % 4),
+      0,
+      32,
+      32,
+      position.x,
+      position.y,
+      player.htmlImage.width / 4,
+      player.htmlImage.height
+    );
+  }
+
+  /**
+   * Clears the board rectangle hosting the player
+   * @param player
+   */
+  clearRectangle(player: Player, position: Position) {
+    let dimension = {
+      width: player.htmlImage.width / 4,
+      height: player.htmlImage.height,
+    } as Dimension;
+
+    this.context.clearRect(
+      position.x,
+      position.y,
+      dimension.width,
+      dimension.height
+    );
   }
 }

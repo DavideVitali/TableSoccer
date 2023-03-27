@@ -47,7 +47,7 @@ export class GameEvents {
       x: e.pageX - this.game.board.leftUserCanvas.width,
       y: e.pageY,
     };
-    let player = this.game.board.team.findPlayer(position);
+    //let player = this.game.board.team.findPlayer(position);
     let controller: PlayerRenderer;
 
     // if (player !== null) {

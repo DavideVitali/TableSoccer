@@ -1,3 +1,6 @@
+import { SETTINGS } from "./settings.js";
+import { Dimension } from "./types.js";
+
 /**
  * Coordinates are the elementary building blocks for determining the position of a Player.
  * There are two types of Coordinates:
@@ -24,16 +27,14 @@ export class Position implements Coordinates {
   constructor(public x: number, public y: number) {}
 }
 
-/**
- * Defines the width and height of an object
- */
-export type Dimension = {
-  width: number;
-  height: number;
-};
-
 export class CoordinatesTransformer {
-  constructor(private d: Dimension) {}
+  private d: Dimension;
+  constructor() {
+    this.d = {
+      width: SETTINGS.board.width,
+      height: SETTINGS.board.height
+    };
+  }
 
   toPoint(position: Position) {
     return {

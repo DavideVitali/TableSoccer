@@ -1,17 +1,20 @@
 import { Card } from "./card.js";
 import { PlayerRenderer } from "./renderers/player-renderer.js";
+import { CardRenderer } from "./renderers/card-renderer.js";
 import { PlayerEvent, PlayerEventDetail } from "./events.js";
 import { Player } from "./player.js";
 import {
   Coordinates,
   CoordinatesTransformer,
-  Dimension,
   Position,
 } from "./coords.js";
 import { Team } from "./team.js";
+import { Dimension } from "./types.js";
+
 declare const leftUserCard: Card;
 
 export class Board extends EventTarget {
+  public team?: Team;
   fieldCanvas: HTMLCanvasElement;
   fieldContext: CanvasRenderingContext2D;
   mouseCanvas: HTMLCanvasElement;
@@ -23,14 +26,14 @@ export class Board extends EventTarget {
   rightUserCanvas: HTMLCanvasElement;
   rightUserContext: CanvasRenderingContext2D;
   pointerLockStartPoint: Coordinates | null;
-  coordinatesTransformer: CoordinatesTransformer;
+  coordinatesTransformer: CoordinatesTransformer = new CoordinatesTransformer();
+  
+  // ----- RENDERERS ---------
+  private playerRenderer: PlayerRenderer;
+  private leftCardRenderer: CardRenderer;
 
-  // TODO: how to call and instantiate the Renderer???
-  playerRenderer: PlayerRenderer;
-
-  constructor(public team: Team, playerRenderer: PlayerRenderer) {
+  constructor() {
     super();
-    this.playerRenderer = playerRenderer;
 
     this.fieldCanvas = document.getElementById("Field")! as HTMLCanvasElement;
     this.fieldContext = this.fieldCanvas.getContext("2d")!;
@@ -52,21 +55,12 @@ export class Board extends EventTarget {
     this.rightUserContext = this.rightUserCanvas.getContext("2d")!;
     this.pointerLockStartPoint = null;
 
-    // players initialization
-    team.players.forEach((p) => {
-      p.loadImage.then((img) => {
-        p.htmlImage = img;
-        p.htmlImage.setAttribute("id", p.name);
-        this.drawPlayer(p, 0);
-      });
-    });
-
-    // sets the coordinates transformer
-    let fieldDimension: Dimension = {
-      width: this.fieldCanvas.width,
-      height: this.fieldCanvas.height,
-    };
-    this.coordinatesTransformer = new CoordinatesTransformer(fieldDimension);
+    /**
+     *    ------------- PLAYER RENDERER ------------------------
+     */
+    this.playerRenderer = new PlayerRenderer(this.playersContext);
+    this.leftCardRenderer = new CardRenderer(this.leftUserContext);
+    
 
     // pointerLock API setup
     this.mouseCanvas.requestPointerLock = this.mouseCanvas.requestPointerLock;
@@ -81,12 +75,8 @@ export class Board extends EventTarget {
     };
 
     this.addEventListener("requestedplayerrectclear", (e) => {
+      console.log('Event handler...');
       let pEvent = e as PlayerEvent;
-      let pDimensions = {
-        width: pEvent.detail.player.htmlImage.width / 4,
-        height: pEvent.detail.player.htmlImage.height,
-      } as Dimension;
-
       this.clearPlayerRectangle(pEvent.detail.player);
     });
 
@@ -128,6 +118,19 @@ export class Board extends EventTarget {
     });
   }
 
+  public init(team: Team) {
+    this.team = team;
+
+    // players initialization
+    this.team.players.forEach((p) => {
+      p.loadImage.then((img) => {
+        p.htmlImage = img;
+        p.htmlImage.setAttribute("id", p.name);
+        this.drawPlayer(p, 0);
+      });
+    });
+  }
+
   // TODO: All drawing methods must use the renderer!
 
   public clearCanvas(
@@ -139,6 +142,10 @@ export class Board extends EventTarget {
 
   // TO BE DEPRECATED BY STATE MACHINE IMPLEMENTATION
   public switchSelected(player: Player) {
+    if (!this.team) {
+      throw new Error("Team not initialized.");
+    }
+
     let selectedPlayers = this.team.players.filter(
       (p) => p.selected === true && p.name !== player.name
     );
@@ -151,6 +158,10 @@ export class Board extends EventTarget {
    * Draws the entire team on the board
    */
   public drawTeam() {
+    if (!this.team) {
+      throw new Error("Team not initialized.");
+    }
+
     this.team.players.forEach((p) => {
       this.drawPlayer(p, 0);
     });
@@ -162,25 +173,16 @@ export class Board extends EventTarget {
    * @param player
    */
   public drawPlayerCard(card: Card, player: Player) {
-    let ctx = this.leftUserContext;
-    ctx.font = "12px fff";
-    if (card.template) {
-      ctx.drawImage(card.template, card.position.x, card.position.y);
-    } else {
-      throw new Error("Card template not loaded!");
-    }
-    const nameWidth = ctx.measureText(player.name).width;
-    ctx.fillText(
-      player.name,
-      (card.template.width - nameWidth) / 2 + card.position.x,
-      202 + card.position.y
-    );
+    this.leftCardRenderer.drawCard(card, player);
   }
 
   /**
    * Finds the player in a waiting state
    */
   public findWaitingPlayer() {
+    if (!this.team) {
+      throw new Error("Team not initialized.");
+    }
     let result = this.team.players.filter((p) => {
       if (p.waiting) {
         return p;
@@ -204,17 +206,8 @@ export class Board extends EventTarget {
    */
   public clearPlayerRectangle(player: Player) {
     let position = this.coordinatesTransformer.toPosition(player.point);
-    let dimension = {
-      width: player.htmlImage.width / 4,
-      height: player.htmlImage.height,
-    } as Dimension;
 
-    this.playersContext.clearRect(
-      position.x,
-      position.y,
-      dimension.width,
-      dimension.height
-    );
+    this.playerRenderer.clearRectangle(player, position);
   }
 
   /**
@@ -223,28 +216,18 @@ export class Board extends EventTarget {
    * @param currentStep If the player is moving, represents the relevant frame in the sprite.
    */
   public drawPlayer(player: Player, currentStep: number): void {
-    let position = this.coordinatesTransformer.toPosition({
-      x: player.point.x,
-      y: player.point.y,
-    });
-    
-    this.playersContext.drawImage(
-      player.htmlImage,
-      (player.htmlImage.width / 4) * (currentStep % 4),
-      0,
-      32,
-      32,
-      position.x,
-      position.y,
-      player.htmlImage.width / 4,
-      player.htmlImage.height
-    );
+    let position = this.coordinatesTransformer.toPosition(player.point);
+
+    this.playerRenderer.drawPlayer(player, currentStep, position);
   }
 
   /**
    * Draws the availability triangle for every available player
    */
   public drawAvailabilityCursors() {
+    if (!this.team) {
+      throw new Error("Team not initialized.");
+    }
     let ctx = this.mouseContext;
     ctx.clearRect(0, 0, this.mouseCanvas.width, this.mouseCanvas.height);
     this.team.players.map((player) => {
@@ -322,6 +305,9 @@ export class Board extends EventTarget {
    * Find and dispatch whether a player's sprite is moving through another player's sprite
    */
   public checkPlayerCollisions(player: Player) {
+    if (!this.team) {
+      throw new Error("Team not initialized.");
+    }
     this.team.players.map((e) => {
       if (e.htmlImage.id !== player.htmlImage.id) {
         let position = this.coordinatesTransformer.toPosition(e.point);

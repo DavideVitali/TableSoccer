@@ -9,8 +9,13 @@ import { PlayerRenderer } from "./renderers/player-renderer.js";
 import { Team } from "./team.js";
 import { FormationModule, FormationType } from "./types.js";
 
+declare global {
+  interface Window {
+    tableSoccer: Game;
+  }
+}
+
 //const leftUserCard = new Card({ x: 10, y: 10 });
-const playerRenderer = new PlayerRenderer(1000, 16);
 const blueTeam = new Team(
   /* _formation */ new Formation(FormationModule._442, FormationType.OFFENSE),
   /* _player */ [
@@ -26,18 +31,10 @@ const blueTeam = new Team(
     new Player("img/ita_playerDown.png", "Immobile"),
     new Player("img/ita_playerDown.png", "Chiesa"),
   ],
-  /* name */"ITALIA"
+  /* name */ "ITALIA"
 );
 
-const tableSoccer = new Game(
-  new Board(blueTeam, playerRenderer)
-);
+const board = new Board();
+board.init(blueTeam);
+window.tableSoccer = new Game(board);
 
-//promises.push(leftUserCard);
-
-// Promise.all(
-//   tableSoccer.board.team.players.map((element) => element.loadImage)
-// ).then(() => {
-//   tableSoccer.board.drawTeam();
-//   tableSoccer.board.drawAvailabilityCursors();
-// });
