@@ -49,7 +49,7 @@ export interface ITransitionManagerInternal<
 /**
  * Defines the contract for an object in a state machine
  * that manages the state transitions over an ITransitionable<T>
- * entity
+ * entity only.
  */
 export interface ITransitionManager<
   TState extends IState,
