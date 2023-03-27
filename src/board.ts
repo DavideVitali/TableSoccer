@@ -132,29 +132,10 @@ export class Board
 
     this.addEventListener("playerclick", (e) => {
       let pEvent = e as PlayerEvent;
-      let clickedPlayer = pEvent.detail.player;
-
-      this.clearCanvas(this.mouseContext, this.mouseCanvas);
-      this.clearCanvas(this.leftUserContext, this.leftUserCanvas);
-      this.drawAvailabilityCursors();
-      this.switchSelected(clickedPlayer);
-      if (clickedPlayer.selected && clickedPlayer.selected === true) {
-        this.drawPlayerCard(leftUserCard, clickedPlayer);
-      } else {
-        // what happens here?
-      }
-
-      if (document.pointerLockElement === this.mouseCanvas) {
-        document.removeEventListener("mousemove", () =>
-          this.updateMaximumMovement(clickedPlayer)
-        );
-        document.exitPointerLock();
-      } else {
-        this.mouseCanvas.requestPointerLock();
-        document.addEventListener("mousemove", () =>
-          this.updateMaximumMovement(clickedPlayer)
-        );
-      }
+      // TODO: decide what happens on player click
+      /**
+       * Specifically, must set a relationship between a click and a StateInput.
+       */
     });
   }
 
@@ -200,20 +181,6 @@ export class Board
     context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  // TO BE DEPRECATED BY STATE MACHINE IMPLEMENTATION
-  public switchSelected(player: Player) {
-    if (!this.team) {
-      throw new Error("Team not initialized.");
-    }
-
-    let selectedPlayers = this.team.players.filter(
-      (p) => p.selected === true && p.name !== player.name
-    );
-    if (selectedPlayers && selectedPlayers.length > 0) {
-      selectedPlayers.forEach((sp) => sp.deselect());
-    }
-  }
-
   /**
    * Draws the entire team on the board
    */
@@ -244,7 +211,7 @@ export class Board
       throw new Error("Team not initialized.");
     }
     let result = this.team.players.filter((p) => {
-      if (p.waiting) {
+      if (p.isWaiting) {
         return p;
       }
     });
@@ -292,7 +259,7 @@ export class Board
     ctx.clearRect(0, 0, this.mouseCanvas.width, this.mouseCanvas.height);
     this.team.players.map((player) => {
       let position = this.coordinatesTransformer.toPosition(player.point);
-      if (!player.moving && !player.moveDone) {
+      if (!player.isMoving && !player.isMoved) {
         let startPosition = {
           x: position.x + player.htmlImage.width / 4 / 2,
           y: position.y + player.htmlImage.height + 4,

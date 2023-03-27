@@ -59,4 +59,24 @@ export class Player
       throw new Error("Player image not loaded!");
     }
   }
+
+  public get isIdle() {
+    return this.currentState === PlayerStateEnum.IDLE;
+  }
+
+  public get isWaiting() {
+    return this.currentState === PlayerStateEnum.WAITING;
+  }
+
+  public get isMoving() {
+    return this.currentState === PlayerStateEnum.MOVING;
+  }
+
+  public get isMoved() {
+    return this.currentState === PlayerStateEnum.MOVED;
+  }
+
+  public get isSelected() {
+    return this.currentState === PlayerStateEnum.SELECTED;
+  }
 }

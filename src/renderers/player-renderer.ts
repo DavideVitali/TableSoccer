@@ -2,6 +2,7 @@ import { Position } from "../coords.js";
 import { PlayerEvent, PlayerEventDetail } from "../events.js";
 import { Player } from "../player.js";
 import { SETTINGS } from "../settings.js";
+import { PlayerInputEnum, PlayerStateEnum } from "../statemachine.js";
 import { Dimension } from "../types.js";
 
 export class PlayerRenderer extends EventTarget {
@@ -109,13 +110,11 @@ export class PlayerRenderer extends EventTarget {
     this.animateSprite(player);
   }
 
-  public isPlaying(player: Player) {
-    return player.moving;
-  }
-
-  
   public setTargetCoordinates(player: Player, target: Position) {
-    if (player.moveDone === true) {
+    if (
+      player.currentState !== PlayerStateEnum.IDLE &&
+      player.currentState !== PlayerStateEnum.WAITING
+    ) {
       throw new Error(`Hai già mosso ${player.name}`);
     }
 
