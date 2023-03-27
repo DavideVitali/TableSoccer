@@ -1,9 +1,15 @@
 import { Point } from "./coords.js";
 import { PlayerEvent, PlayerEventDetail } from "./events.js";
-import { IStateable as IStateable, PlayerStateEnum } from "./statemachine.js";
+import {
+  ITransitionable as ITransitionable,
+  PlayerStateEnum,
+} from "./statemachine.js";
 import { Utils } from "./utils.js";
 
-export class Player extends EventTarget implements IStateable<PlayerStateEnum> {
+export class Player
+  extends EventTarget
+  implements ITransitionable<PlayerStateEnum>
+{
   private _waiting: boolean;
   private _moving: boolean;
   private _moveDone: boolean | null;
@@ -56,7 +62,6 @@ export class Player extends EventTarget implements IStateable<PlayerStateEnum> {
 
     this.addEventListener("playercollision", (e) => {});
   }
-
 
   /**
    * Get the position of the player as a Point type.

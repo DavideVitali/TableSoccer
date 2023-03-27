@@ -7,7 +7,7 @@ import { Coordinates, CoordinatesTransformer, Position } from "./coords.js";
 import { Team } from "./team.js";
 import { Dimension } from "./types.js";
 import {
-  ITransitionable,
+  ITransitionManager,
   ITransitionProvider,
   ITransitionStart,
   PlayerInputEnum,
@@ -21,7 +21,7 @@ export class Board
   extends EventTarget
   implements
     ITransitionProvider<PlayerStateEnum, PlayerInputEnum, PlayerTransition>,
-    ITransitionable<PlayerStateEnum, PlayerInputEnum, Player>
+    ITransitionManager<PlayerStateEnum, PlayerInputEnum, Player>
 {
   public team?: Team;
   fieldCanvas: HTMLCanvasElement;
@@ -129,7 +129,7 @@ export class Board
         PlayerStateEnum.MOVED,
       ],
     ];
-    
+
     this.addEventListener("playerclick", (e) => {
       let pEvent = e as PlayerEvent;
       let clickedPlayer = pEvent.detail.player;
@@ -161,12 +161,14 @@ export class Board
   getNext(entity: Player, input: PlayerInputEnum): PlayerStateEnum {
     let currentState = entity.currentState;
 
-    let allowed = this.transitions.find(t => {
-      t[0].state === currentState && t[0].input === input
+    let allowed = this.transitions.find((t) => {
+      t[0].state === currentState && t[0].input === input;
     });
 
     if (!allowed) {
-      throw new Error(`Input ${input} is not allowed for ${currentState} state in player ${entity.name}.`);
+      throw new Error(
+        `Input ${input} is not allowed for ${currentState} state in player ${entity.name}.`
+      );
     }
 
     return allowed[1];
