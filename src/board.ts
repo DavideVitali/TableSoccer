@@ -3,17 +3,26 @@ import { PlayerRenderer } from "./renderers/player-renderer.js";
 import { CardRenderer } from "./renderers/card-renderer.js";
 import { PlayerEvent, PlayerEventDetail } from "./events.js";
 import { Player } from "./player.js";
-import {
-  Coordinates,
-  CoordinatesTransformer,
-  Position,
-} from "./coords.js";
+import { Coordinates, CoordinatesTransformer, Position } from "./coords.js";
 import { Team } from "./team.js";
 import { Dimension } from "./types.js";
+import {
+  ITransitionable,
+  ITransitionProvider,
+  ITransitionStart,
+  PlayerInputEnum,
+  PlayerStateEnum,
+  PlayerTransition,
+} from "./statemachine.js";
 
 declare const leftUserCard: Card;
 
-export class Board extends EventTarget {
+export class Board
+  extends EventTarget
+  implements
+    ITransitionProvider<PlayerStateEnum, PlayerInputEnum, PlayerTransition>,
+    ITransitionable<PlayerStateEnum, PlayerInputEnum, Player>
+{
   public team?: Team;
   fieldCanvas: HTMLCanvasElement;
   fieldContext: CanvasRenderingContext2D;
@@ -27,7 +36,8 @@ export class Board extends EventTarget {
   rightUserContext: CanvasRenderingContext2D;
   pointerLockStartPoint: Coordinates | null;
   coordinatesTransformer: CoordinatesTransformer = new CoordinatesTransformer();
-  
+  transitions: [PlayerTransition, PlayerStateEnum][];
+
   // ----- RENDERERS ---------
   private playerRenderer: PlayerRenderer;
   private leftCardRenderer: CardRenderer;
@@ -60,7 +70,6 @@ export class Board extends EventTarget {
      */
     this.playerRenderer = new PlayerRenderer(this.playersContext);
     this.leftCardRenderer = new CardRenderer(this.leftUserContext);
-    
 
     // pointerLock API setup
     this.mouseCanvas.requestPointerLock = this.mouseCanvas.requestPointerLock;
@@ -75,7 +84,7 @@ export class Board extends EventTarget {
     };
 
     this.addEventListener("requestedplayerrectclear", (e) => {
-      console.log('Event handler...');
+      console.log("Event handler...");
       let pEvent = e as PlayerEvent;
       this.clearPlayerRectangle(pEvent.detail.player);
     });
@@ -90,6 +99,37 @@ export class Board extends EventTarget {
       this.drawPlayer(pEvent.detail.player, pEvent.detail.movement);
     });
 
+    // ------- TRANSITIONS -----------
+    this.transitions = [
+      [
+        new PlayerTransition(PlayerStateEnum.IDLE, PlayerInputEnum.SELECT),
+        PlayerStateEnum.WAITING,
+      ],
+      [
+        new PlayerTransition(PlayerStateEnum.WAITING, PlayerInputEnum.DESELECT),
+        PlayerStateEnum.IDLE,
+      ],
+      [
+        new PlayerTransition(PlayerStateEnum.WAITING, PlayerInputEnum.MOVE),
+        PlayerStateEnum.MOVING,
+      ],
+      [
+        new PlayerTransition(PlayerStateEnum.MOVING, PlayerInputEnum.STOP),
+        PlayerStateEnum.MOVED,
+      ],
+      [
+        new PlayerTransition(PlayerStateEnum.MOVED, PlayerInputEnum.SELECT),
+        PlayerStateEnum.SELECTED,
+      ],
+      [
+        new PlayerTransition(
+          PlayerStateEnum.SELECTED,
+          PlayerInputEnum.DESELECT
+        ),
+        PlayerStateEnum.MOVED,
+      ],
+    ];
+    
     this.addEventListener("playerclick", (e) => {
       let pEvent = e as PlayerEvent;
       let clickedPlayer = pEvent.detail.player;
@@ -116,6 +156,24 @@ export class Board extends EventTarget {
         );
       }
     });
+  }
+
+  getNext(entity: Player, input: PlayerInputEnum): PlayerStateEnum {
+    let currentState = entity.currentState;
+
+    let allowed = this.transitions.find(t => {
+      t[0].state === currentState && t[0].input === input
+    });
+
+    if (!allowed) {
+      throw new Error(`Input ${input} is not allowed for ${currentState} state in player ${entity.name}.`);
+    }
+
+    return allowed[1];
+  }
+
+  update(entity: Player, input: PlayerInputEnum): void {
+    entity.currentState = this.getNext(entity, input);
   }
 
   public init(team: Team) {

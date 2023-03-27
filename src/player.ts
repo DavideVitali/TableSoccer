@@ -1,8 +1,9 @@
 import { Point } from "./coords.js";
 import { PlayerEvent, PlayerEventDetail } from "./events.js";
+import { IStateable as IStateable, PlayerStateEnum } from "./statemachine.js";
 import { Utils } from "./utils.js";
 
-export class Player extends EventTarget {
+export class Player extends EventTarget implements IStateable<PlayerStateEnum> {
   private _waiting: boolean;
   private _moving: boolean;
   private _moveDone: boolean | null;
@@ -14,6 +15,7 @@ export class Player extends EventTarget {
   private _isLoaded: boolean;
   public loadImage: Promise<HTMLImageElement>;
   private _htmlImage: HTMLImageElement | any;
+  currentState: PlayerStateEnum = PlayerStateEnum.IDLE;
 
   constructor(
     imageUrl: string,
@@ -54,6 +56,7 @@ export class Player extends EventTarget {
 
     this.addEventListener("playercollision", (e) => {});
   }
+
 
   /**
    * Get the position of the player as a Point type.
