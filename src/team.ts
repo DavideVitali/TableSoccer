@@ -18,7 +18,7 @@ export class Team {
       throw new Error("Formation length must be equal to Team length.");
     }
 
-    for(let i = 0; i < _players.length; i++) {
+    for (let i = 0; i < _players.length; i++) {
       _players[i].point = _formation.coordinates[i];
     }
   }
@@ -36,7 +36,7 @@ export class Team {
   }
 
   /**
-   * Find a player by its position over the board.
+   * Find a player by its point values.
    * @param point
    * @returns
    */

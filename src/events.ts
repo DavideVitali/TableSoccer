@@ -6,15 +6,12 @@ import { Player } from "./player.js";
 import { Team } from "./team.js";
 
 export type PlayerEventDetail = {
-  player: Player,
-  movement: number
+  player: Player;
+  movement: number;
 };
 
 export class PlayerEvent extends CustomEvent<PlayerEventDetail> {
-  constructor(
-    name: string,
-    detail: PlayerEventDetail
-  ) {
+  constructor(name: string, detail: PlayerEventDetail) {
     let init = new PlayerEventInit(detail);
     super(name, init);
   }
@@ -24,7 +21,8 @@ class PlayerEventInit implements CustomEventInit<PlayerEventDetail> {
   detail?: PlayerEventDetail;
 
   constructor(eventDetail: PlayerEventDetail) {
-    if (!eventDetail.player) throw new Error('PlayerEventInit needs a non-null player instance.');
+    if (!eventDetail.player)
+      throw new Error("PlayerEventInit needs a non-null player instance.");
     this.detail = eventDetail;
   }
 }
@@ -47,7 +45,11 @@ export class GameEvents {
       x: e.pageX - this.game.board.leftUserCanvas.width,
       y: e.pageY,
     };
-    //let player = this.game.board.team.findPlayer(position);
+
+    // TODO: doesn't work
+    let point = this.game.board.coordinatesTransformer.toPoint(position);
+    let player = this.game.board.team!.findPlayer(point);
+    alert(player?.name);
     let controller: PlayerRenderer;
 
     // if (player !== null) {
