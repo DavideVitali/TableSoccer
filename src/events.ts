@@ -46,7 +46,6 @@ export class GameEvents {
       e.pageY
     );
 
-    // TODO: doesn't work, but should...
     let player = this.game.board.findPlayer<Position>(position);
     alert(player?.name);
     let controller: PlayerRenderer;
