@@ -47,7 +47,14 @@ export class GameEvents {
     );
 
     let player = this.game.board.findPlayer<Position>(position);
-    alert(player?.name);
+
+    if (player) {
+      let pEvt = new PlayerEvent("playerclick", {
+        player: player,
+        movement: 0,
+      } as PlayerEventDetail);
+      this.game.board.dispatchEvent(pEvt);
+    }
     let controller: PlayerRenderer;
 
     // if (player !== null) {

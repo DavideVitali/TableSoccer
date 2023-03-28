@@ -132,6 +132,7 @@ export class Board
 
     this.addEventListener("playerclick", (e) => {
       let pEvent = e as PlayerEvent;
+      console.log(pEvent.detail.player.name);
       // TODO: decide what happens on player click
       /**
        * Specifically, must set a relationship between a click and a StateInput.
@@ -371,8 +372,6 @@ export class Board
    * @returns
    */
   findPlayer<T extends Coordinates>(coordinates: T) {
-    console.log(typeof coordinates);
-    console.log(coordinates instanceof Position);
     if (!this.team) {
       throw new Error("Team can't be null");
     }
