@@ -34,26 +34,4 @@ export class Team {
   get name() {
     return this._name;
   }
-
-  /**
-   * Find a player by its point values.
-   * @param point
-   * @returns
-   */
-  findPlayer(point: Point) {
-    for (let i = 0; i < this._players.length; i++) {
-      let width = this._players[i].htmlImage.width / 4;
-      let height = this._players[i].htmlImage.height;
-      let playerPoint = this._players[i].point;
-      if (
-        playerPoint.x < point.x &&
-        playerPoint.x + width > point.x &&
-        playerPoint.y < point.y &&
-        playerPoint.y + height > point.y
-      ) {
-        return this._players[i];
-      }
-    }
-    return null;
-  }
 }

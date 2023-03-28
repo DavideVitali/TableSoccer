@@ -365,6 +365,44 @@ export class Board
     });
   }
 
+  /**
+   * Find a player by its position or point values.
+   * @param point
+   * @returns
+   */
+  findPlayer<T extends Coordinates>(coordinates: T) {
+    console.log(typeof coordinates);
+    console.log(coordinates instanceof Position);
+    if (!this.team) {
+      throw new Error("Team can't be null");
+    }
+    for (let i = 0; i < this.team.players.length; i++) {
+      let width = this.team.players[i].htmlImage.width / 4;
+      let height = this.team.players[i].htmlImage.height;
+      if (coordinates instanceof Position) {
+        let playerPosition = this.coordinatesTransformer.toPosition(
+          this.team.players[i].point
+        );
+        if (
+          playerPosition.x < coordinates.x &&
+          playerPosition.x + width > coordinates.x &&
+          playerPosition.y < coordinates.y &&
+          playerPosition.y + height > coordinates.y
+        ) {
+          return this.team.players[i];
+        }
+      } else {
+        let playerPoint = this.team.players[i].point;
+        if (
+          playerPoint.x === coordinates.x &&
+          playerPoint.y === playerPoint.y
+        ) {
+          return this.team.players[i];
+        }
+      }
+    }
+    return null;
+  }
   // REVIEW
   public updateMaximumMovement(player: Player) {
     this.drawMaximumMovement(player);

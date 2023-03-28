@@ -1,6 +1,6 @@
 import { Board } from "./board.js";
 import { PlayerRenderer } from "./renderers/player-renderer.js";
-import { Coordinates } from "./coords.js";
+import { Coordinates, Position } from "./coords.js";
 import { Game } from "./game.js";
 import { Player } from "./player.js";
 import { Team } from "./team.js";
@@ -41,14 +41,13 @@ export class GameEvents {
   }
 
   private mouseEventCanvasListener(e: MouseEvent) {
-    let position: Coordinates = {
-      x: e.pageX - this.game.board.leftUserCanvas.width,
-      y: e.pageY,
-    };
+    let position = new Position(
+      e.pageX - this.game.board.leftUserCanvas.width,
+      e.pageY
+    );
 
-    // TODO: doesn't work
-    let point = this.game.board.coordinatesTransformer.toPoint(position);
-    let player = this.game.board.team!.findPlayer(point);
+    // TODO: doesn't work, but should...
+    let player = this.game.board.findPlayer<Position>(position);
     alert(player?.name);
     let controller: PlayerRenderer;
 
